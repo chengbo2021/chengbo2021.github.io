@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#c9272c">
-<meta name="description" content="Bo Cheng — crop science, agricultural systems modeling, and sustainability. Research, modeling, and partnerships for more resilient agriculture.">
-<meta property="og:title" content="Bo Cheng — Agriculture. Innovation. Global Impact.">
-<meta property="og:description" content="Crop science, agricultural systems modeling, and sustainability — connecting evidence with practical decisions.">
+<meta name="description" content="Bo Cheng helps agribusinesses expand into international markets — market and agronomic assessment, crop modeling, local field validation, and cross-border partnerships. 程博：助力农业企业走向全球。">
+<meta property="og:title" content="Bo Cheng — Helping Agribusiness Grow Globally | 助力农业企业走向全球">
+<meta property="og:description" content="Science-led international market entry for agribusiness: assess, validate, connect. 用科学助力农业企业稳健走向全球。">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23c9272c'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='800' font-size='16' fill='white' text-anchor='middle'%3EB.%3C/text%3E%3C/svg%3E">
-<title>Bo Cheng — Agriculture. Innovation. Global Impact.</title>
+<title>Bo Cheng — Helping Agribusiness Grow Globally</title>
 <style>
 :root{--red:#c9272c;--red-dark:#991f24;--ink:#191817;--muted:#615e5a;--paper:#f7f5f1;--line:#e6e0d9;--white:#fff;--green:#53684b;--max:1180px;--header:72px}
 *{box-sizing:border-box}
@@ -17,7 +17,7 @@ html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header) + 12px)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit}
-img,svg{max-width:100%}
+svg{max-width:100%}
 :focus-visible{outline:2px solid var(--red);outline-offset:3px}
 .wrap{width:min(var(--max),calc(100% - 48px));margin:auto}
 .skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:#fff;padding:10px 14px;z-index:100;font-size:13px}
@@ -29,7 +29,7 @@ img,svg{max-width:100%}
 .topbar{height:var(--header);display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:11px;font-size:18px;font-weight:850;letter-spacing:.12em}
 .brand-mark{width:32px;height:32px;background:var(--red);color:#fff;display:grid;place-items:center;font-size:14px;letter-spacing:-.05em;border-radius:3px}
-.nav{display:flex;gap:26px;align-items:center;font-size:13px;color:#494541}
+.nav{display:flex;gap:24px;align-items:center;font-size:13px;color:#494541}
 .nav a{position:relative;padding:4px 0}
 .nav a:not(.nav-cta)::after{content:"";position:absolute;left:0;right:100%;bottom:-2px;height:2px;background:var(--red);transition:right .2s}
 .nav a:not(.nav-cta):hover::after,.nav a.active::after{right:0}
@@ -51,21 +51,23 @@ img,svg{max-width:100%}
 .hero{display:grid;grid-template-columns:1.02fr .98fr;gap:46px;align-items:center;padding:64px 0 82px;min-height:600px}
 .eyebrow{font-size:11px;font-weight:800;letter-spacing:.19em;text-transform:uppercase;color:var(--red);display:flex;gap:10px;align-items:center}
 .eyebrow::before{content:"";width:27px;height:2px;background:currentColor}
-h1{font-size:clamp(44px,6.3vw,82px);line-height:.98;letter-spacing:-.06em;margin:24px 0 25px;font-weight:850;max-width:650px}
+h1{font-size:clamp(42px,6vw,78px);line-height:1;letter-spacing:-.055em;margin:24px 0 25px;font-weight:850;max-width:650px}
 h1 span{color:var(--red)}
-[lang="zh-CN"] h1{letter-spacing:-.02em;line-height:1.08}
-.hero-copy{max-width:520px;color:#56524e;font-size:17px;margin:0}
+[lang="zh-CN"] h1{letter-spacing:-.02em;line-height:1.12}
+.hero-copy{max-width:530px;color:#56524e;font-size:17px;margin:0}
 .hero-actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 19px;border:1px solid var(--ink);font-size:13px;font-weight:750;transition:background .2s,color .2s,border-color .2s,transform .2s;cursor:pointer;background:transparent;border-radius:2px}
 .btn.primary{background:var(--red);border-color:var(--red);color:#fff}
 .btn.primary:hover{background:var(--red-dark);border-color:var(--red-dark)}
 .btn.secondary:hover{background:#eee9e2}
 .btn:active{transform:translateY(1px)}
-.hero-art{position:relative;min-height:440px;background:#e7e3da;overflow:hidden;border-radius:3px;box-shadow:0 30px 60px -40px rgba(38,61,48,.55)}
+.hero-art{position:relative;min-height:440px;background:#e7e3da;overflow:hidden;border-radius:3px;box-shadow:0 30px 60px -40px rgba(38,61,48,.55);margin:0}
 .hero-art svg{width:100%;height:100%;position:absolute;inset:0}
 .sun{transform-origin:424px 164px;animation:breathe 7s ease-in-out infinite}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.art-note{position:absolute;left:22px;bottom:22px;background:rgba(255,255,255,.95);padding:14px 16px;max-width:240px;border-left:3px solid var(--red)}
+.route{stroke-dasharray:6 8;animation:travel 2.4s linear infinite}
+@keyframes travel{to{stroke-dashoffset:-28}}
+.art-note{position:absolute;left:22px;bottom:22px;background:rgba(255,255,255,.95);padding:14px 16px;max-width:250px;border-left:3px solid var(--red)}
 .art-note strong{display:block;font-size:12px;letter-spacing:.04em}
 .art-note span{font-size:11px;color:var(--muted)}
 .art-index{position:absolute;top:20px;right:20px;color:#fff;background:var(--red);padding:9px 12px;font-size:11px;letter-spacing:.12em}
@@ -82,25 +84,33 @@ h1 span{color:var(--red)}
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:38px}
 .kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:800}
 .section h2{font-size:clamp(32px,4vw,49px);letter-spacing:-.045em;line-height:1.08;margin:12px 0 0;max-width:650px}
-[lang="zh-CN"] .section h2{letter-spacing:-.01em;line-height:1.2}
-.section-intro{max-width:380px;color:var(--muted);font-size:14px;margin:0}
+[lang="zh-CN"] .section h2{letter-spacing:-.01em;line-height:1.22}
+.section-intro{max-width:420px;color:var(--muted);font-size:14px;margin:0}
 
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.card{background:#fff;border:1px solid var(--line);padding:28px 26px 26px;min-height:290px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card{background:#fff;border:1px solid var(--line);padding:28px 26px 26px;min-height:300px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s,box-shadow .25s}
 .card:hover{transform:translateY(-4px);border-color:#d2a5a2;box-shadow:0 18px 40px -28px rgba(153,31,36,.45)}
 .card-no{font-size:11px;letter-spacing:.14em;color:var(--red);font-weight:800}
 .card-icon{margin:22px 0 18px;width:46px;height:46px;display:grid;place-items:center;background:#f8e8e6;color:var(--red);border-radius:2px}
 .card-icon svg{width:24px;height:24px}
 .card h3{font-size:20px;letter-spacing:-.025em;margin:0 0 9px;line-height:1.25}
 .card p{font-size:14px;color:var(--muted);margin:0 0 24px}
-.card a{margin-top:auto;font-size:12px;font-weight:800;color:var(--red);display:inline-flex;gap:6px;align-items:center}
+.card a{margin-top:auto;font-size:12px;font-weight:800;color:var(--red)}
 .card a:hover{text-decoration:underline;text-underline-offset:4px}
+
+/* Audience */
+.audience{background:var(--ink);color:#fff}
+.audience .section-intro{color:#bcb7b0}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.chip{border:1px solid #3d3a37;padding:18px 18px 16px;font-size:15px;font-weight:700;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,background .2s}
+.chip:hover{border-color:var(--red);background:#22201f}
+.chip small{font-size:12px;font-weight:400;color:#a9a39c}
 
 .split{background:#eae6de}
 .split-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center}
 .quote-mark{font-family:Georgia,serif;font-size:100px;line-height:.65;color:var(--red);margin-top:20px}
 .statement{font-size:clamp(27px,3.4vw,42px);line-height:1.18;letter-spacing:-.04em;margin:24px 0}
-[lang="zh-CN"] .statement{letter-spacing:0;line-height:1.35}
+[lang="zh-CN"] .statement{letter-spacing:0;line-height:1.4}
 .statement em{font-style:normal;color:var(--red)}
 .bio{font-size:16px;max-width:620px;margin:0 0 14px}
 .bio-sub{font-size:14px;color:var(--muted);margin:0 0 30px;max-width:620px}
@@ -110,19 +120,19 @@ h1 span{color:var(--red)}
 .principle p{font-size:13px;color:var(--muted);margin:0}
 
 /* Approach */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--ink);counter-reset:step}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink);list-style:none;padding:0;margin:0}
 .step{padding:26px 24px 8px 0;position:relative}
 .step::before{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--red)}
 .step .num{font-size:12px;color:var(--red);font-weight:800;letter-spacing:.1em}
-.step h3{font-size:21px;letter-spacing:-.025em;margin:8px 0 8px}
+.step h3{font-size:21px;letter-spacing:-.025em;margin:8px 0}
 .step p{font-size:14px;color:var(--muted);margin:0}
 
 /* Contact */
 .contact{background:var(--red);color:#fff;padding:80px 0}
 .contact-grid{display:flex;justify-content:space-between;align-items:center;gap:35px}
 .contact h2{font-size:clamp(34px,5vw,60px);letter-spacing:-.05em;line-height:1.05;margin:13px 0 15px;max-width:680px}
-[lang="zh-CN"] .contact h2{letter-spacing:-.01em;line-height:1.2}
-.contact p{color:#ffe1df;max-width:530px;font-size:15px;margin:0}
+[lang="zh-CN"] .contact h2{letter-spacing:-.01em;line-height:1.22}
+.contact p{color:#ffe1df;max-width:540px;font-size:15px;margin:0}
 .contact-actions{display:flex;flex-direction:column;gap:10px;min-width:260px}
 .contact .btn{background:#fff;border-color:#fff;color:var(--red);white-space:nowrap}
 .contact .btn:hover{background:#f8e8e6}
@@ -138,14 +148,15 @@ h1 span{color:var(--red)}
 .footer-links{display:flex;gap:18px;font-size:13px;color:#ded9d2;flex-wrap:wrap}
 .footer-links a:hover{color:#fff}
 
-/* Toast */
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:11px 16px;font-size:13px;border-radius:3px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* Reveal on scroll (only when JS runs) */
 .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .js .reveal.in{opacity:1;transform:none}
 
+@media(max-width:980px){
+  .chips{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:900px){
   .steps{grid-template-columns:1fr 1fr;row-gap:10px}
   .step:nth-child(3),.step:nth-child(4){border-top:2px solid var(--ink);margin-top:20px}
@@ -169,6 +180,8 @@ h1 span{color:var(--red)}
   .section-intro{margin-top:18px}
   .cards{grid-template-columns:1fr}
   .card{min-height:0}
+  .chips{grid-template-columns:1fr 1fr;gap:10px}
+  .chip{padding:14px;font-size:14px}
   .split-grid{grid-template-columns:1fr;gap:28px}
   .principles{grid-template-columns:1fr;gap:16px}
   .steps{grid-template-columns:1fr;border-top:0;border-left:2px solid var(--ink);margin-left:6px}
@@ -193,10 +206,11 @@ h1 span{color:var(--red)}
 <header class="wrap topbar">
   <a class="brand" href="#top" aria-label="Bo Cheng — home"><span class="brand-mark" aria-hidden="true">B.</span><span>BOCHENG</span></a>
   <nav class="nav" id="mainNav" aria-label="Main navigation">
-    <a href="#focus" data-en="Focus areas" data-zh="专业方向">Focus areas</a>
-    <a href="#about" data-en="About" data-zh="关于">About</a>
-    <a href="#approach" data-en="Approach" data-zh="理念">Approach</a>
-    <a href="#contact" class="nav-cta" data-en="Start a conversation ↗" data-zh="开启合作 ↗">Start a conversation ↗</a>
+    <a href="#services" data-en="Services" data-zh="服务内容">Services</a>
+    <a href="#who" data-en="Who I help" data-zh="服务对象">Who I help</a>
+    <a href="#about" data-en="About" data-zh="关于我">About</a>
+    <a href="#approach" data-en="Process" data-zh="合作流程">Process</a>
+    <a href="#contact" class="nav-cta" data-en="Talk about global growth ↗" data-zh="咨询合作 ↗">Talk about global growth ↗</a>
     <button class="lang" type="button" data-lang-toggle aria-label="切换到中文">中文</button>
   </nav>
   <div class="header-actions">
@@ -210,23 +224,25 @@ h1 span{color:var(--red)}
 <div id="top"></div>
 <section class="wrap hero">
   <div>
-    <div class="eyebrow" data-en="Independent perspective · Global outlook" data-zh="独立视角 · 全球视野">Independent perspective · Global outlook</div>
-    <h1 data-en-html="Agriculture.<br><span>Innovation.</span><br>Global Impact." data-zh-html="农业。<br><span>创新。</span><br>全球影响力。">Agriculture.<br><span>Innovation.</span><br>Global Impact.</h1>
-    <p class="hero-copy" data-en="Connecting agricultural science, crop modeling, and practical innovation with the people and places they can serve." data-zh="让农业科学、作物模型与实践创新更紧密地连接真正需要它们的人与土地。">Connecting agricultural science, crop modeling, and practical innovation with the people and places they can serve.</p>
+    <div class="eyebrow" data-en="Global agriculture · Science first" data-zh="农业国际化 · 科学先行">Global agriculture · Science first</div>
+    <h1 data-en-html="Helping agribusiness <span>grow globally.</span>" data-zh-html="助力农业企业<br><span>走向全球。</span>">Helping agribusiness <span>grow globally.</span></h1>
+    <p class="hero-copy" data-en="I help agricultural companies expand into new international markets with confidence—using crop science, modeling, and local field evidence to reduce risk and build trust." data-zh="用作物科学、模型分析和本地田间证据，帮助农业企业降低国际化风险，在全球市场建立信任、稳健落地。">I help agricultural companies expand into new international markets with confidence—using crop science, modeling, and local field evidence to reduce risk and build trust.</p>
     <div class="hero-actions">
-      <a class="btn primary" href="#focus" data-en="Explore my work →" data-zh="了解我的方向 →">Explore my work →</a>
-      <a class="btn secondary" href="#about" data-en="Meet Bo Cheng" data-zh="认识程博">Meet Bo Cheng</a>
+      <a class="btn primary" href="#services" data-en="See how I help →" data-zh="了解服务内容 →">See how I help →</a>
+      <a class="btn secondary" href="#contact" data-en="Start a conversation" data-zh="预约交流">Start a conversation</a>
     </div>
   </div>
-  <figure class="hero-art" style="margin:0">
+  <figure class="hero-art">
     <svg viewBox="0 0 620 600" role="img" aria-labelledby="artTitle" preserveAspectRatio="xMidYMid slice">
-      <title id="artTitle">Cultivated fields under a rising sun</title>
+      <title id="artTitle">A route arcing from one field to fields across the horizon</title>
       <defs>
         <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b9c4ad"/><stop offset="1" stop-color="#eee0c9"/></linearGradient>
         <linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6b7e56"/><stop offset="1" stop-color="#263d30"/></linearGradient>
       </defs>
       <rect width="620" height="600" fill="url(#sky)"/>
       <g class="sun"><circle cx="424" cy="164" r="103" fill="#c9272c" opacity=".1"/><circle cx="424" cy="164" r="75" fill="#c9272c" opacity=".94"/></g>
+      <path class="route" d="M70 300 C 150 90, 330 40, 560 250" fill="none" stroke="#191817" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+      <circle cx="70" cy="300" r="7" fill="#191817"/><circle cx="560" cy="250" r="7" fill="#fff" stroke="#191817" stroke-width="2.5"/>
       <path d="M0 285 Q105 222 208 269 T420 251 T620 267 V600 H0Z" fill="#9a9b76"/>
       <path d="M0 333 Q155 274 302 323 T620 301 V600 H0Z" fill="#6f805c"/>
       <path d="M0 390 Q170 312 330 371 T620 343 V600 H0Z" fill="url(#land)"/>
@@ -234,88 +250,105 @@ h1 span{color:var(--red)}
       <path d="M0 480 Q170 425 330 470 T620 446 V600 H0Z" fill="#243c2d" opacity=".65"/>
       <g stroke="#e2d8bb" stroke-width="1" opacity=".5" fill="none"><path d="M0 515 Q160 458 325 500 T620 478"/><path d="M0 552 Q160 496 325 536 T620 515"/><path d="M0 585 Q160 530 325 570 T620 552"/></g>
     </svg>
-    <div class="art-index" aria-hidden="true">FIELD NOTES / 01</div>
-    <figcaption class="art-note"><strong data-en="SCIENCE TO REAL-WORLD IMPACT" data-zh="从科学走向真实影响">SCIENCE TO REAL-WORLD IMPACT</strong><span data-en="Crops · Soil · Water · Collaboration" data-zh="作物 · 土壤 · 水分 · 合作">Crops · Soil · Water · Collaboration</span></figcaption>
+    <div class="art-index" aria-hidden="true">LOCAL → GLOBAL</div>
+    <figcaption class="art-note"><strong data-en="SCIENCE-LED MARKET ENTRY" data-zh="以科学驱动海外落地">SCIENCE-LED MARKET ENTRY</strong><span data-en="Assess · Validate · Connect" data-zh="研判 · 验证 · 对接">Assess · Validate · Connect</span></figcaption>
   </figure>
 </section>
 
-<section class="proof" aria-label="Areas of expertise"><div class="wrap proof-row">
-  <div class="proof-item"><b data-en="CROP MODELING" data-zh="作物模型">CROP MODELING</b><span data-en="Evidence-based agricultural insight" data-zh="以证据为基础的农业洞察">Evidence-based agricultural insight</span></div>
-  <div class="proof-item"><b data-en="AGRICULTURAL INNOVATION" data-zh="农业创新">AGRICULTURAL INNOVATION</b><span data-en="Productivity, soil health, resilience" data-zh="生产力、土壤健康与韧性">Productivity, soil health, resilience</span></div>
-  <div class="proof-item"><b data-en="FIELD TO SYSTEM" data-zh="从田间到系统">FIELD TO SYSTEM</b><span data-en="Connecting data with decisions" data-zh="连接数据与决策">Connecting data with decisions</span></div>
-  <div class="proof-item"><b data-en="GLOBAL PARTNERSHIPS" data-zh="全球合作">GLOBAL PARTNERSHIPS</b><span data-en="Research, industry, development" data-zh="科研、产业与发展">Research, industry, development</span></div>
+<section class="proof" aria-label="Core capabilities"><div class="wrap proof-row">
+  <div class="proof-item"><b data-en="MARKET & SITE ASSESSMENT" data-zh="市场与选址研判">MARKET & SITE ASSESSMENT</b><span data-en="Climate, soils, crops, policy" data-zh="气候、土壤、作物与政策">Climate, soils, crops, policy</span></div>
+  <div class="proof-item"><b data-en="CROP MODELING" data-zh="作物模型与风险评估">CROP MODELING</b><span data-en="Scenarios before investment" data-zh="投资之前先做情景模拟">Scenarios before investment</span></div>
+  <div class="proof-item"><b data-en="LOCAL FIELD VALIDATION" data-zh="本地田间验证">LOCAL FIELD VALIDATION</b><span data-en="Evidence local buyers trust" data-zh="当地客户认可的试验数据">Evidence local buyers trust</span></div>
+  <div class="proof-item"><b data-en="CROSS-BORDER BRIDGE" data-zh="跨国合作桥梁">CROSS-BORDER BRIDGE</b><span data-en="Research, partners, markets" data-zh="连接科研、伙伴与市场">Research, partners, markets</span></div>
 </div></section>
 
-<section class="wrap section" id="focus">
+<section class="wrap section" id="services">
   <div class="section-head reveal">
-    <div><div class="kicker" data-en="What I work toward" data-zh="关注的方向">What I work toward</div><h2 data-en-html="Science that connects<br>to meaningful action." data-zh-html="让科学研究<br>连接有意义的行动。">Science that connects<br>to meaningful action.</h2></div>
-    <p class="section-intro" data-en="A practical, systems-oriented approach to agricultural development—from field-scale questions to broader opportunities." data-zh="以务实、系统化的方式探索农业可持续发展，从田间问题出发，寻找更广泛的应用机会。">A practical, systems-oriented approach to agricultural development—from field-scale questions to broader opportunities.</p>
+    <div><div class="kicker" data-en="What I help with" data-zh="我能帮企业做什么">What I help with</div><h2 data-en-html="Go global with evidence,<br>not guesswork." data-zh-html="走向全球，<br>靠证据，不靠运气。">Go global with evidence,<br>not guesswork.</h2></div>
+    <p class="section-intro" data-en="Many agricultural products are highly competitive in their home markets. In a new country, success depends on local climate, soils, farming practices, regulations, and trust. I help companies answer these questions early—before major investment." data-zh="很多农业产品在本土市场很有竞争力，但进入新的国家，成败取决于当地的气候、土壤、种植习惯、法规和信任。我帮助企业在大规模投入之前，先把这些问题想清楚。">Many agricultural products are highly competitive in their home markets. In a new country, success depends on local climate, soils, farming practices, regulations, and trust. I help companies answer these questions early—before major investment.</p>
   </div>
   <div class="cards">
     <article class="card reveal">
-      <span class="card-no" data-en="01 / MODELING" data-zh="01 / 模型">01 / MODELING</span>
+      <span class="card-no" data-en="01 / ASSESS" data-zh="01 / 研判">01 / ASSESS</span>
+      <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg></div>
+      <h3 data-en="Market & Agronomic Assessment" data-zh="目标市场与农业条件研判">Market & Agronomic Assessment</h3>
+      <p data-en="Evaluate target regions by climate, soils, cropping systems, water, and policy context—so you know where your product fits, and why." data-zh="从气候、土壤、种植制度、水资源和政策环境出发评估目标区域，弄清产品适合哪里、为什么适合。">Evaluate target regions by climate, soils, cropping systems, water, and policy context—so you know where your product fits, and why.</p>
+      <a href="#contact" data-en="Discuss your target market →" data-zh="聊聊目标市场 →">Discuss your target market →</a>
+    </article>
+    <article class="card reveal">
+      <span class="card-no" data-en="02 / VALIDATE" data-zh="02 / 验证">02 / VALIDATE</span>
       <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
-      <h3 data-en="Crop & Systems Modeling" data-zh="作物与农业系统模型">Crop & Systems Modeling</h3>
-      <p data-en="Using DSSAT and process-based approaches to investigate crop growth, water use, climate risk, and management scenarios." data-zh="运用 DSSAT 与过程模型，研究作物生长、水分利用、气候风险和农业管理情景。">Using DSSAT and process-based approaches to investigate crop growth, water use, climate risk, and management scenarios.</p>
-      <a href="#contact" data-en="Discuss a research question →" data-zh="探讨研究问题 →">Discuss a research question →</a>
+      <h3 data-en="Localization & Field Validation" data-zh="产品本地化与田间验证">Localization & Field Validation</h3>
+      <p data-en="Design local trials and use crop models (DSSAT) to test how seeds, fertilizers, soil amendments, or irrigation solutions perform under real local conditions." data-zh="设计本地田间试验，并结合作物模型（DSSAT），评估种子、肥料、土壤改良剂或灌溉方案在当地真实条件下的表现。">Design local trials and use crop models (DSSAT) to test how seeds, fertilizers, soil amendments, or irrigation solutions perform under real local conditions.</p>
+      <a href="#contact" data-en="Plan a field trial →" data-zh="规划田间试验 →">Plan a field trial →</a>
     </article>
     <article class="card reveal">
-      <span class="card-no" data-en="02 / SUSTAINABILITY" data-zh="02 / 可持续">02 / SUSTAINABILITY</span>
-      <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11c0-4 3-7 8-7 0 5-3 8-8 7z"/><path d="M12 14c0-3-2.5-5.5-7-5.5 0 4 2.5 6.5 7 5.5z"/></svg></div>
-      <h3 data-en="Sustainable Crop Production" data-zh="可持续作物生产">Sustainable Crop Production</h3>
-      <p data-en="Exploring crop management, irrigation strategies, biochar, soil health, and resilient production systems." data-zh="探索作物管理、灌溉策略、生物炭、土壤健康与韧性农业生产系统。">Exploring crop management, irrigation strategies, biochar, soil health, and resilient production systems.</p>
-      <a href="#contact" data-en="Explore collaboration →" data-zh="探索合作机会 →">Explore collaboration →</a>
-    </article>
-    <article class="card reveal">
-      <span class="card-no" data-en="03 / IMPLEMENTATION" data-zh="03 / 实践">03 / IMPLEMENTATION</span>
+      <span class="card-no" data-en="03 / CONNECT" data-zh="03 / 对接">03 / CONNECT</span>
       <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8 16l8-8"/><path d="M13 6h3M18 9v3"/></svg></div>
-      <h3 data-en="Agricultural Research to Impact" data-zh="农业科研创造实际价值">Agricultural Research to Impact</h3>
-      <p data-en="Connecting credible evidence with practical decisions, farmer outcomes, and responsible agricultural innovation." data-zh="连接可信科学证据与实际决策、农户收益及负责任的农业创新。">Connecting credible evidence with practical decisions, farmer outcomes, and responsible agricultural innovation.</p>
-      <a href="#contact" data-en="Build something useful →" data-zh="共同创造实际价值 →">Build something useful →</a>
+      <h3 data-en="Partnerships & Market Entry" data-zh="海外合作与落地对接">Partnerships & Market Entry</h3>
+      <p data-en="Connect companies with universities, extension networks, distributors, and farms across borders—explaining technology and value clearly across languages and cultures." data-zh="跨越国界连接高校、农技推广体系、经销商和农场，跨越语言与文化把技术和价值讲清楚。">Connect companies with universities, extension networks, distributors, and farms across borders—explaining technology and value clearly across languages and cultures.</p>
+      <a href="#contact" data-en="Find international partners →" data-zh="寻找国际伙伴 →">Find international partners →</a>
     </article>
   </div>
 </section>
+
+<section class="audience section" id="who"><div class="wrap">
+  <div class="section-head reveal">
+    <div><div class="kicker" data-en="Who I work with" data-zh="服务对象">Who I work with</div><h2 data-en="Agribusinesses ready for global markets." data-zh="准备走向全球市场的农业企业。">Agribusinesses ready for global markets.</h2></div>
+    <p class="section-intro" data-en="Whether you are entering a first international market or scaling an existing one, the same question applies: will it work in their fields?" data-zh="无论是第一次进入国际市场，还是在已有市场扩大规模，核心问题都一样：在当地的田里，行不行得通？">Whether you are entering a first international market or scaling an existing one, the same question applies: will it work in their fields?</p>
+  </div>
+  <div class="chips reveal">
+    <div class="chip"><span data-en="Seed companies" data-zh="种业企业">Seed companies</span><small data-en="Variety adaptation & testing" data-zh="品种适应性与区域试验">Variety adaptation & testing</small></div>
+    <div class="chip"><span data-en="Fertilizers & biostimulants" data-zh="肥料与生物刺激素">Fertilizers & biostimulants</span><small data-en="Efficacy data for new markets" data-zh="面向新市场的肥效数据">Efficacy data for new markets</small></div>
+    <div class="chip"><span data-en="Soil amendments & biochar" data-zh="土壤改良与生物炭">Soil amendments & biochar</span><small data-en="Soil health & yield evidence" data-zh="土壤健康与增产证据">Soil health & yield evidence</small></div>
+    <div class="chip"><span data-en="Irrigation & water-saving" data-zh="灌溉与节水设备">Irrigation & water-saving</span><small data-en="Water-use scenarios by region" data-zh="分区域用水情景分析">Water-use scenarios by region</small></div>
+    <div class="chip"><span data-en="Agricultural machinery" data-zh="农机装备">Agricultural machinery</span><small data-en="Fit with local farming systems" data-zh="匹配当地种植制度">Fit with local farming systems</small></div>
+    <div class="chip"><span data-en="Digital & smart agriculture" data-zh="数字与智慧农业">Digital & smart agriculture</span><small data-en="Models, data, decision tools" data-zh="模型、数据与决策工具">Models, data, decision tools</small></div>
+    <div class="chip"><span data-en="Agri investment & parks" data-zh="农业投资与产业园区">Agri investment & parks</span><small data-en="Site screening & risk review" data-zh="选址筛查与风险评估">Site screening & risk review</small></div>
+    <div class="chip"><span data-en="Your sector?" data-zh="你的行业？">Your sector?</span><small data-en="Let's talk it through" data-zh="欢迎来聊">Let's talk it through</small></div>
+  </div>
+</div></section>
 
 <section class="split section" id="about"><div class="wrap split-grid">
   <div class="reveal">
     <div class="kicker" data-en="About Bo Cheng" data-zh="关于程博">About Bo Cheng</div>
     <div class="quote-mark" aria-hidden="true">“</div>
-    <p class="statement" data-en-html="Better agriculture needs both <em>scientific rigor</em> and a clear view of the world beyond the field." data-zh-html="更好的农业既需要<em>严谨的科学</em>，也需要看见田野之外的世界。">Better agriculture needs both <em>scientific rigor</em> and a clear view of the world beyond the field.</p>
+    <p class="statement" data-en-html="Going global isn't just exporting products—it's <em>earning trust</em> in someone else's fields." data-zh-html="走向全球不只是把产品卖出去，而是<em>在别人的土地上赢得信任</em>。">Going global isn't just exporting products—it's <em>earning trust</em> in someone else's fields.</p>
   </div>
   <div class="reveal">
-    <p class="bio" data-en="Bo Cheng works at the intersection of crop science, agricultural systems modeling, and sustainability. His interests center on using quantitative evidence to understand agricultural choices and support better outcomes for producers, landscapes, and communities." data-zh="程博关注作物科学、农业系统模型与可持续发展的交叉领域，致力于运用定量证据理解农业选择，为生产者、土地生态系统和社区探索更好的发展路径。">Bo Cheng works at the intersection of crop science, agricultural systems modeling, and sustainability. His interests center on using quantitative evidence to understand agricultural choices and support better outcomes for producers, landscapes, and communities.</p>
-    <p class="bio-sub" data-en="This platform is a starting point for research exchange, interdisciplinary collaboration, and practical ideas that can be tested in the real world." data-zh="这个平台是科研交流、跨学科合作，以及探索可在现实世界中验证的实践方案的起点。">This platform is a starting point for research exchange, interdisciplinary collaboration, and practical ideas that can be tested in the real world.</p>
-    <!-- TODO before publishing: add a verified short bio (education, affiliation), selected publications, and professional links (Google Scholar / ORCID / LinkedIn). -->
+    <p class="bio" data-en="Bo Cheng works at the intersection of crop science, agricultural systems modeling, and international agriculture. Working across languages and cultures, he helps agricultural companies understand growing conditions in new markets, generate credible local evidence, and build lasting partnerships across borders." data-zh="程博专注于作物科学、农业系统模型与国际农业的交叉领域。凭借跨语言、跨文化的沟通能力和定量研究背景，他帮助农业企业读懂新市场的种植条件、获得可信的本地证据，并建立跨国的长期合作关系。">Bo Cheng works at the intersection of crop science, agricultural systems modeling, and international agriculture. Working across languages and cultures, he helps agricultural companies understand growing conditions in new markets, generate credible local evidence, and build lasting partnerships across borders.</p>
+    <p class="bio-sub" data-en="The goal is simple: help good agricultural technologies reach the farmers who need them, wherever they are—responsibly and sustainably." data-zh="目标很简单：让优秀的农业技术，以负责任、可持续的方式，走到世界各地真正需要它们的农户身边。">The goal is simple: help good agricultural technologies reach the farmers who need them, wherever they are—responsibly and sustainably.</p>
+    <!-- TODO: add verified affiliation, education, and any past international projects or partners (only with permission). -->
     <div class="principles">
-      <div class="principle"><b data-en="Evidence before claims" data-zh="以证据为先">Evidence before claims</b><p data-en="Make assumptions visible. Keep conclusions grounded." data-zh="明确假设，让结论建立在证据之上。">Make assumptions visible. Keep conclusions grounded.</p></div>
-      <div class="principle"><b data-en="Impact beyond papers" data-zh="让影响超越论文">Impact beyond papers</b><p data-en="Look for ways research can inform action." data-zh="寻找让研究推动实际行动的路径。">Look for ways research can inform action.</p></div>
-      <div class="principle"><b data-en="Global perspective" data-zh="全球视野">Global perspective</b><p data-en="Connect places, disciplines, and people." data-zh="连接不同地区、学科与人群。">Connect places, disciplines, and people.</p></div>
-      <div class="principle"><b data-en="Build with integrity" data-zh="以诚信共建">Build with integrity</b><p data-en="Prioritize transparent, responsible progress." data-zh="重视透明、负责任的长期进步。">Prioritize transparent, responsible progress.</p></div>
+      <div class="principle"><b data-en="Evidence first" data-zh="证据先行">Evidence first</b><p data-en="Decisions grounded in data, not hype." data-zh="用数据支撑决策，不夸大、不盲目。">Decisions grounded in data, not hype.</p></div>
+      <div class="principle"><b data-en="Local fit" data-zh="因地制宜">Local fit</b><p data-en="Respect local farms, rules, and markets." data-zh="尊重当地农情、法规与市场。">Respect local farms, rules, and markets.</p></div>
+      <div class="principle"><b data-en="Clear on both sides" data-zh="双向沟通">Clear on both sides</b><p data-en="Explain technology and value to both partners." data-zh="把技术与价值讲清楚给双方听。">Explain technology and value to both partners.</p></div>
+      <div class="principle"><b data-en="Long-term partnership" data-zh="长期共赢">Long-term partnership</b><p data-en="Build relationships that outlast a single deal." data-zh="建立超越一次交易的长期关系。">Build relationships that outlast a single deal.</p></div>
     </div>
   </div>
 </div></section>
 
 <section class="wrap section" id="approach">
   <div class="section-head reveal">
-    <div><div class="kicker" data-en="From questions to outcomes" data-zh="从问题到成果">From questions to outcomes</div><h2 data-en="A bridge between disciplines." data-zh="搭建跨学科的桥梁。">A bridge between disciplines.</h2></div>
-    <p class="section-intro" data-en="The strongest work often happens where methods, lived experience, and implementation meet." data-zh="真正有价值的工作，往往发生在研究方法、真实经验与实际应用的交汇处。">The strongest work often happens where methods, lived experience, and implementation meet.</p>
+    <div><div class="kicker" data-en="How a project works" data-zh="项目怎么推进">How a project works</div><h2 data-en="From first question to first harvest." data-zh="从第一个问题，到第一季收获。">From first question to first harvest.</h2></div>
+    <p class="section-intro" data-en="A staged approach keeps risk low and lets each step inform the next." data-zh="分阶段推进，控制风险，每一步都为下一步提供依据。">A staged approach keeps risk low and lets each step inform the next.</p>
   </div>
-  <ol class="steps reveal" style="list-style:none;padding-left:0;margin:0">
-    <li class="step"><span class="num">01</span><h3 data-en="Understand" data-zh="理解问题">Understand</h3><p data-en="Define the question, context, evidence, and uncertainty." data-zh="明确问题、背景、证据与不确定性。">Define the question, context, evidence, and uncertainty.</p></li>
-    <li class="step"><span class="num">02</span><h3 data-en="Model" data-zh="建立模型">Model</h3><p data-en="Use appropriate tools to test scenarios and reveal trade-offs." data-zh="选择合适的工具测试情景，揭示不同选择的权衡。">Use appropriate tools to test scenarios and reveal trade-offs.</p></li>
-    <li class="step"><span class="num">03</span><h3 data-en="Validate" data-zh="验证结果">Validate</h3><p data-en="Compare results with observations and communicate limits clearly." data-zh="用观测数据检验结果，并清楚说明适用边界。">Compare results with observations and communicate limits clearly.</p></li>
-    <li class="step"><span class="num">04</span><h3 data-en="Collaborate" data-zh="协同实践">Collaborate</h3><p data-en="Turn credible findings into decisions, partnerships, and pilots." data-zh="将可信发现转化为决策、合作与试点实践。">Turn credible findings into decisions, partnerships, and pilots.</p></li>
+  <ol class="steps reveal">
+    <li class="step"><span class="num">01</span><h3 data-en="Assess" data-zh="研判">Assess</h3><p data-en="Clarify goals, target markets, and key risks." data-zh="明确目标、目标市场与关键风险。">Clarify goals, target markets, and key risks.</p></li>
+    <li class="step"><span class="num">02</span><h3 data-en="Model" data-zh="模拟">Model</h3><p data-en="Simulate performance across sites, seasons, and scenarios." data-zh="模拟不同地点、季节与情景下的表现。">Simulate performance across sites, seasons, and scenarios.</p></li>
+    <li class="step"><span class="num">03</span><h3 data-en="Validate" data-zh="验证">Validate</h3><p data-en="Run local trials and collect evidence buyers trust." data-zh="开展本地试验，获得客户认可的证据。">Run local trials and collect evidence buyers trust.</p></li>
+    <li class="step"><span class="num">04</span><h3 data-en="Launch" data-zh="落地">Launch</h3><p data-en="Connect partners, run pilots, and scale what works." data-zh="对接伙伴、开展试点，规模化推广有效方案。">Connect partners, run pilots, and scale what works.</p></li>
   </ol>
 </section>
 
 <section class="contact" id="contact"><div class="wrap contact-grid">
   <div class="reveal">
-    <div class="eyebrow" style="color:#fff" data-en="Let's connect" data-zh="建立联系">Let's connect</div>
-    <h2 data-en="Have a question, idea, or opportunity?" data-zh="有问题、想法，或合作机会？">Have a question, idea, or opportunity?</h2>
-    <p data-en="I welcome thoughtful conversations about agricultural research, crop modeling, and collaborations that connect science with practice." data-zh="欢迎交流农业研究、作物建模，以及连接科学与实践的合作机会。">I welcome thoughtful conversations about agricultural research, crop modeling, and collaborations that connect science with practice.</p>
+    <div class="eyebrow" style="color:#fff" data-en="Expanding internationally?" data-zh="计划拓展国际市场？">Expanding internationally?</div>
+    <h2 data-en="Let's talk about your global plans." data-zh="先聊一次你的全球化计划。">Let's talk about your global plans.</h2>
+    <p data-en="Whether you are exploring a first market or preparing field trials abroad, I'm happy to start with a conversation." data-zh="无论你正在考察第一个国际市场，还是准备在新的国家开展田间试验，都欢迎先聊一聊。">Whether you are exploring a first market or preparing field trials abroad, I'm happy to start with a conversation.</p>
   </div>
   <div class="contact-actions reveal">
-    <a class="btn" href="mailto:bzc0087@auburn.edu?subject=Hello%20Bo%20Cheng" data-en="Email Bo Cheng →" data-zh="发邮件给程博 →">Email Bo Cheng →</a>
+    <a class="btn" href="mailto:bzc0087@auburn.edu?subject=Global%20agriculture%20inquiry" data-en="Email Bo Cheng →" data-zh="发邮件给程博 →">Email Bo Cheng →</a>
     <button class="btn ghost" type="button" id="copyEmail" data-en="Copy email address" data-zh="复制邮箱地址">Copy email address</button>
     <div class="contact-detail"><a href="mailto:bzc0087@auburn.edu">bzc0087@auburn.edu</a> · <a href="tel:+8615927293443">+86 159 2729 3443</a></div>
   </div>
@@ -325,12 +358,12 @@ h1 span{color:var(--red)}
 <footer class="footer"><div class="wrap footer-row">
   <a class="brand" href="#top" aria-label="Back to top"><span class="brand-mark" aria-hidden="true">B.</span><span>BOCHENG</span></a>
   <div class="footer-links">
-    <a href="#focus" data-en="Focus areas" data-zh="专业方向">Focus areas</a>
-    <a href="#about" data-en="About" data-zh="关于">About</a>
-    <a href="#approach" data-en="Approach" data-zh="理念">Approach</a>
+    <a href="#services" data-en="Services" data-zh="服务内容">Services</a>
+    <a href="#who" data-en="Who I help" data-zh="服务对象">Who I help</a>
+    <a href="#about" data-en="About" data-zh="关于我">About</a>
     <a href="#contact" data-en="Contact" data-zh="联系">Contact</a>
   </div>
-  <small>© <span id="year"></span> Bo Cheng · <span data-en="Built for meaningful impact." data-zh="为有意义的影响而建。">Built for meaningful impact.</span></small>
+  <small>© <span id="year"></span> Bo Cheng · <span data-en="Helping agribusiness grow globally." data-zh="助力农业企业走向全球。">Helping agribusiness grow globally.</span></small>
 </div></footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -341,14 +374,14 @@ h1 span{color:var(--red)}
   root.classList.add('js');
   document.getElementById('year').textContent=new Date().getFullYear();
 
-  /* ---------- Language ---------- */
-  var TITLES={en:'Bo Cheng — Agriculture. Innovation. Global Impact.',zh:'程博 — 农业 · 创新 · 全球影响力'};
+  var TITLES={en:'Bo Cheng — Helping Agribusiness Grow Globally',zh:'程博 — 助力农业企业走向全球'};
   var MSG={
     en:{copied:'Email address copied',copyFail:'Copy failed — please copy manually',open:'Open menu',close:'Close menu',toggle:'切换到中文',label:'中文'},
     zh:{copied:'邮箱地址已复制',copyFail:'复制失败，请手动复制',open:'打开菜单',close:'关闭菜单',toggle:'Switch to English',label:'EN'}
   };
   var language='en';
-  function store(k,v){try{v===undefined?v=localStorage.getItem(k):localStorage.setItem(k,v);return v}catch(e){return null}}
+  var menuBtn=document.getElementById('menuBtn');
+  function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 
   function applyLanguage(lang){
     language=lang;
@@ -360,8 +393,6 @@ h1 span{color:var(--red)}
     menuBtn.setAttribute('aria-label',document.body.classList.contains('menu-open')?MSG[lang].close:MSG[lang].open);
   }
 
-  /* ---------- Mobile menu ---------- */
-  var menuBtn=document.getElementById('menuBtn');
   function setMenu(open){
     document.body.classList.toggle('menu-open',open);
     menuBtn.setAttribute('aria-expanded',String(open));
@@ -374,12 +405,10 @@ h1 span{color:var(--red)}
   document.querySelectorAll('[data-lang-toggle]').forEach(function(b){
     b.addEventListener('click',function(){var next=language==='en'?'zh':'en';applyLanguage(next);store('bocheng-lang',next)});
   });
-
   var saved=store('bocheng-lang');
   var initial=saved||((navigator.language||'').toLowerCase().indexOf('zh')===0?'zh':'en');
   if(initial!=='en')applyLanguage(initial);
 
-  /* ---------- Header shadow + active nav ---------- */
   var header=document.getElementById('siteHeader');
   function onScroll(){header.classList.toggle('scrolled',window.scrollY>8)}
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
@@ -396,7 +425,7 @@ h1 span{color:var(--red)}
         }
       });
     },{rootMargin:'-45% 0px -50% 0px'});
-    ['focus','about','approach'].forEach(function(id){var s=document.getElementById(id);if(s)spy.observe(s)});
+    Object.keys(navLinks).forEach(function(id){var s=document.getElementById(id);if(s)spy.observe(s)});
 
     var rev=new IntersectionObserver(function(entries){
       entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');rev.unobserve(en.target)}});
@@ -406,7 +435,6 @@ h1 span{color:var(--red)}
     document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in')});
   }
 
-  /* ---------- Copy email ---------- */
   var toast=document.getElementById('toast'),t;
   function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(t);t=setTimeout(function(){toast.classList.remove('show')},2200)}
   document.getElementById('copyEmail').addEventListener('click',function(){
