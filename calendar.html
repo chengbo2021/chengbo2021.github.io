@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>活动日历 · Bo Cheng</title>
+<meta name="description" content="传统节日、武汉、荆州、北京、奥本大学、NBA 和足球等活动的倒计时日历，按距今天数自动排序。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a cinnabar "almanac" — one big countdown seal on top, then a month-by-month strip of red-ledger rows. */
+:root{
+  --bg:#fff7f5; --surface:#ffffff; --ink:#2b1412; --muted:#8a5f5a; --line:#f1d9d5;
+  --red:#c8161d; --red-soft:#fde8e6; --red-deep:#8f0f14; --gold:#b07a1e; --gold-soft:#fbf0dc;
+  --orange:#d9531e; --orange-soft:#fdebe2; --rose:#b7335b; --rose-soft:#fbe6ee; --plum:#7a2e3a; --plum-soft:#f6e6e8;
+  --on-red:#fff6ef; --hero:#c8161d;
+  --serif:"Noto Serif SC","Songti SC","STSong",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#170c0b; --surface:#221312; --ink:#f8e9e6; --muted:#c09a94; --line:#3a2120;
+  --red:#ff5b55; --red-soft:#3b1716; --red-deep:#ff8f88; --gold:#e3b25a; --gold-soft:#33260f;
+  --orange:#ff8a55; --orange-soft:#3a1d10; --rose:#ff7aa2; --rose-soft:#3a1622; --plum:#e59aa6; --plum-soft:#341a1f;
+  --on-red:#fff6ef; --hero:#9e1218; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 56px;display:flex;flex-direction:column;gap:28px}
+header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(28px,6vw,40px);margin:0;letter-spacing:.04em;color:var(--red);text-wrap:balance}
+.today{color:var(--muted);font-size:14px}
+.today b{color:var(--ink);font-weight:500}
+a.doc{color:var(--red);font-size:14px;text-decoration:none;border-bottom:1px solid currentColor}
+a.doc:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* Hero: the next date as a big seal */
+.hero{background:var(--hero);color:var(--on-red);border-radius:18px;padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:28px solid rgba(255,255,255,.08)}
+.seal{width:118px;height:118px;border:3px solid var(--on-red);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--serif);line-height:1}
+.seal .n{font-size:52px;font-weight:900;font-variant-numeric:tabular-nums}
+.seal .u{font-size:14px;margin-top:6px;letter-spacing:.3em;padding-left:.3em}
+.hero .eyebrow{font-size:12px;letter-spacing:.2em;opacity:.85}
+.hero h2{font-family:var(--serif);font-size:clamp(24px,5vw,32px);margin:2px 0 4px;font-weight:900}
+.hero .meta{font-size:14px;opacity:.92}
+.hero .also{margin-top:10px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px}
+.hero .also span{background:rgba(255,255,255,.14);border-radius:999px;padding:2px 10px}
+@media (max-width:520px){.hero{grid-template-columns:1fr;gap:14px}.seal{width:96px;height:96px}.seal .n{font-size:42px}}
+
+/* Filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip .c{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--on-red)}
+.chip[aria-pressed="true"] .c{color:var(--on-red);opacity:.8}
+.chip:hover{border-color:var(--red)}
+
+.allyear{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px;color:var(--muted);border-left:3px solid var(--gold);padding:4px 0 4px 12px}
+.allyear b{color:var(--ink);font-weight:500}
+
+/* Timeline */
+.month{display:flex;flex-direction:column;gap:2px}
+.month h3{font-family:var(--serif);font-size:18px;margin:0 0 6px;color:var(--red-deep);display:flex;align-items:baseline;gap:10px}
+.month h3 small{font-family:var(--sans);font-size:12px;color:var(--muted);font-weight:400}
+.row{display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:center;padding:12px 14px;background:var(--surface);border-radius:12px;border:1px solid transparent;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.row+.row{margin-top:6px}
+.row:hover{border-color:var(--line)}
+.row:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.row .d{font-variant-numeric:tabular-nums;line-height:1.25}
+.row .d b{font-family:var(--serif);font-size:20px;display:block}
+.row .d span{font-size:12px;color:var(--muted)}
+.row .t{min-width:0}
+.row .t .name{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row .t .sub{font-size:13px;color:var(--muted)}
+.row .t .more{font-size:13px;margin-top:6px;color:var(--ink)}
+.row .left{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .left b{font-family:var(--serif);font-size:22px;color:var(--red)}
+.row .left span{font-size:12px;color:var(--muted);display:block}
+.row.soon{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+.row.fest .d b{color:var(--red)}
+.tag{font-size:11px;font-weight:500;border-radius:4px;padding:1px 6px;letter-spacing:.05em}
+.live{font-size:11px;color:var(--red);font-weight:700}
+[hidden]{display:none!important}
+a.go{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+a.go:hover{color:var(--red);border-bottom-color:var(--red)}
+a.go:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+a.go .arr{font-size:11px;font-weight:500;color:var(--red);margin-left:6px;white-space:nowrap}
+.k-fest{background:var(--red);color:var(--on-red)}
+.k-local{background:var(--orange-soft);color:var(--orange)}
+.k-sport{background:var(--plum-soft);color:var(--plum)}
+.k-expo{background:var(--gold-soft);color:var(--gold)}
+.k-music{background:var(--rose-soft);color:var(--rose)}
+.k-school{background:var(--red-deep);color:var(--surface)}
+.k-aufb{background:var(--orange);color:var(--surface)}
+.k-aubb{background:var(--surface);color:var(--orange);border:1px solid var(--orange)}
+.k-intl{background:var(--gold-soft);color:var(--gold);border:1px solid var(--gold)}
+.k-bjlocal{background:var(--orange-soft);color:var(--orange)}
+.k-bjsport{background:var(--plum-soft);color:var(--plum)}
+.k-bjexpo{background:var(--gold-soft);color:var(--gold)}
+.k-bjculture{background:var(--rose-soft);color:var(--rose)}
+.k-bjgov{background:var(--red-deep);color:var(--surface)}
+.k-fcn,.k-fus,.k-fal,.k-feu,.k-fap{background:var(--surface);color:var(--red-deep);border:1px solid var(--red)}
+.k-golf{background:var(--gold);color:var(--surface)}
+.k-edu{background:var(--gold);color:var(--surface)}
+.k-jzlocal{background:var(--plum);color:var(--surface)}
+.k-jzsport{background:var(--surface);color:var(--plum);border:1px solid var(--plum)}
+.k-au{background:var(--orange-soft);color:var(--orange);border:1px solid var(--orange)}
+.k-auag{background:var(--gold);color:var(--surface)}
+.k-nba{background:var(--red-deep);color:var(--surface)}
+.k-hawks{background:var(--red);color:var(--on-red)}
+.k-bball{background:var(--surface);color:var(--red-deep);border:1px solid var(--red-deep)}
+.k-soccer{background:var(--plum);color:var(--surface)}
+.k-fam{background:var(--rose-soft);color:var(--rose);border:1px solid var(--rose)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:18px;color:var(--muted);font-size:14px}
+.note{font-size:12px;color:var(--muted);margin:0}
+@media (max-width:520px){.row{grid-template-columns:58px 1fr auto;gap:10px;padding:10px 12px}.row .d b{font-size:17px}.row .left b{font-size:18px}}
+@media (prefers-reduced-motion:no-preference){.row,.chip{transition:border-color .15s,background .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>活动日历</h1>
+      <div class="today" id="today"></div>
+    </div>
+    <a class="doc" href="./">← 返回主页 Bo Cheng</a>
+  </header>
+
+  <div class="hero" id="hero" aria-live="polite"></div>
+
+  <div class="filters" id="filters" role="toolbar" aria-label="按类别筛选"></div>
+  <div class="allyear" id="allyear"></div>
+  <div id="timeline" style="display:flex;flex-direction:column;gap:22px"></div>
+
+  <p class="note">点活动名字打开网站：“官网”直达官方网站，“搜索”打开搜索结果（中国的活动用百度）。点其他地方展开说明。</p>
+  <p class="note">日期按距今天数自动排序。标了“约”“日期待定”或“以官宣为准”的是按往年估计的，出行前请以主办方公布为准。内容整理于 2026 年 11 月。</p>
+</div>
+
+<script>
+(function(){
+const DAY=864e5;
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const mk=(y,m,d)=>new Date(y,m-1,d);
+const WK='日一二三四五六';
+function todayLocal(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());}
+let TODAY=todayLocal();
+
+/* Lunar helpers via Intl (with a fix for 2027 正月, which ICU starts a day late) */
+let LF=null;try{LF=new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{month:'numeric',day:'numeric',timeZone:'UTC'});}catch(e){}
+const CN_M=['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+const CN_D=d=>d===10?'初十':d===20?'二十':d===30?'三十':(d<10?'初':d<20?'十':d<30?'廿':'三')+'一二三四五六七八九'[(d%10)-1];
+function lunarOf(date){
+  if(!LF) return null;
+  const t=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),12);
+  const p=LF.formatToParts(new Date(t));let m=p.find(x=>x.type==='month').value,d=+p.find(x=>x.type==='day').value;
+  let leap=m.startsWith('闰');let mm=+m.replace('闰','');
+  const iso=ymd(date);
+  if(iso==='2027-02-06'){mm=1;d=1;leap=false;}
+  else if(iso>'2027-02-06'&&iso<'2027-03-09'&&mm===1&&!leap){d=d+1;}
+  return {m:mm,d,leap};
+}
+const lunarText=l=>l?((l.leap?'闰':'')+CN_M[l.m-1]+'月'+CN_D(l.d)):'';
+
+/* Fixed dates checked against published calendars (2027 春节 = 2 月 6 日) */
+const FEST={
+  '冬至':['2026-12-22','2027-12-22','2028-12-21','2029-12-21'],
+  '腊八':['2027-01-15','2028-01-04','2029-01-22'],
+  '除夕':['2027-02-05','2028-01-25','2029-02-12'],
+  '春节':['2027-02-06','2028-01-26','2029-02-13'],
+  '元宵':['2027-02-20','2028-02-09','2029-02-27'],
+  '清明':['2027-04-05','2028-04-04','2029-04-04'],
+  '端午':['2027-06-09','2028-05-28','2029-06-16'],
+  '七夕':['2027-08-08','2028-08-26','2029-08-16'],
+  '中秋':['2026-09-25','2027-09-15','2028-10-03','2029-09-22'],
+  '重阳':['2027-10-08','2028-10-26','2029-10-16'],
+};
+const FEST_NOTE={
+  '冬至':'武汉：数九开始；不少人家冬至上坟祭祖；武汉人冬至前后开始灌香肠、腌腊鱼腊肉；北京：北京讲究"冬至饺子夏至面"，这天吃饺子；也是数九的开始',
+  '腊八':'武汉：归元寺施腊八粥，一早就排长队；北京：雍和宫、广化寺施腊八粥；家家泡腊八蒜，等年三十就饺子吃',
+  '除夕':'武汉：年夜饭：排骨藕汤、珍珠圆子、全鱼；北京：年夜饭吃饺子；看春晚、守岁',
+  '春节':'武汉：归元寺数罗汉、黄鹤楼新春活动；法定假期 2 月 5–13 日（2027）；北京：逛庙会：地坛、龙潭、厂甸、大观园；法定假期 2 月 5–13 日（2027）',
+  '元宵':'武汉：看灯会、吃汤圆；北京：吃元宵（北京是"滚"出来的元宵，不是汤圆）；园博园、世园等灯会',
+  '清明':'武汉：踏青扫墓，东湖、木兰山；石门峰、九峰山、扁担山、龙泉山等陵园清明前后很堵，可提前一两周错峰；假期 4 月 3–5 日（2027）；北京：踏青：八大处、香山、植物园；假期 4 月 3–5 日（2027）',
+  '端午':'武汉：看龙舟、吃粽子；屈原故里在宜昌秭归；荆州：古城河九龙渊赛龙舟，洪湖、石首、监利、松滋各县市都划龙舟；北京：吃粽子（北京爱吃小枣粽）；通州大运河龙舟赛',
+  '七夕':'武汉：古琴台知音文化；北京：鹊桥会；什刹海、北海夜游',
+  '中秋':'武汉：江滩、黄鹤楼赏月；之后接国庆假期 10 月 1–7 日；北京：吃月饼、请"兔儿爷"；颐和园、北海赏月；之后接国庆假期 10 月 1–7 日',
+  '重阳':'武汉：登龟山、蛇山、木兰山；敬老；北京：登高：香山、八达岭、慕田峪；敬老',
+};
+
+/* Lunar-date customs, computed each year from the lunar calendar */
+const LUNAR_FEST=[
+  {n:'归元寺初五迎财神',m:1,d:5,k:'local',l:'农历正月初五',x:'武汉人正月初五到归元寺烧香、数罗汉；人极多，周边有交通管制'},
+  {n:'二月二 龙抬头',m:2,d:2,x:'理发的日子，给孩子“剃龙头”'},
+  {n:'三月三',m:3,d:3,x:'武汉：“三月三，地菜煮鸡蛋”'},
+  {n:'中元节（七月半）',m:7,d:15,x:'武汉：给过世的亲人“烧包袱”，包袱上写先人名讳；各家多在七月十五之前几天办'},
+  {n:'寒衣节',m:10,d:1,x:'农历十月初一，给先人“送寒衣”；和清明、中元并称三个祭祖的日子'},
+  {n:'小年（腊月二十四）',m:12,d:24,x:'武汉和湖北多数地方腊月二十四过小年（北方是二十三）；扫尘、办年货'},
+];
+
+/* Recurring events: windows by month-day; labels say how exact they are */
+const EVENTS=[
+  // ---- 武汉 ----
+  {n:'东湖梅花节',k:'local',s:'02-10',e:'03-15',l:'2–3 月',x:'东湖梅园，全国四大梅园之一'},
+  {n:'武汉大学、东湖樱花节',k:'local',s:'03-10',e:'04-05',l:'3 月',x:'武大樱花需提前网上预约'},
+  {n:'中超：武汉三镇主场',k:'sport',s:'03-01',e:'11-08',l:'3–11 月',x:'赛程以俱乐部公布为准'},
+  {n:'草莓音乐节（春季）',k:'music',s:'04-20',e:'04-21',l:'春季，约 4 月',x:'具体日期以官宣为准'},
+  {n:'武汉马拉松（汉马）',k:'sport',s:'04-12',e:'04-12',l:'4 月',x:'报名一般在年初抽签'},
+  {n:'世界大健康博览会',k:'expo',s:'04-08',e:'04-10',l:'4 月',x:'医疗、医药、健康产业'},
+  {n:'武汉种子交易会',k:'expo',s:'04-15',e:'04-17',l:'4 月中旬',x:'种业交易展'},
+  {n:'楚超（湖北省城市足球联赛）',k:'sport',s:'04-01',e:'11-10',l:'4–11 月',x:'武汉主场比赛氛围很好'},
+  {n:'光博会',k:'expo',s:'05-18',e:'05-20',l:'5 月',x:'光谷国际光电子博览会'},
+  {n:'华中国际车展',k:'expo',s:'05-01',e:'05-05',l:'5 月',x:'上半年车展'},
+  {n:'汽水音乐节',k:'music',s:'05-28',e:'05-30',l:'5 月底',x:''},
+  {n:'武汉国际渡江节',k:'local',s:'07-16',e:'07-16',l:'7 月 16 日前后',x:'纪念毛泽东畅游长江'},
+  {n:'中部（武汉）糖酒食品交易会',k:'expo',s:'08-15',e:'08-17',l:'8 月',x:'食品饮料'},
+  {n:'城市音乐新秀场',k:'music',s:'10-01',e:'10-07',l:'10 月（国庆）',x:''},
+  {n:'武汉网球公开赛（武网）',k:'sport',s:'10-05',e:'10-12',l:'10 月上中旬',x:'WTA 1000，女子赛季最后一站 1000 赛'},
+  {n:'草莓音乐节（秋季）',k:'music',s:'10-18',e:'10-25',l:'秋季，约 10 月',x:'具体日期以官宣为准'},
+  {n:'武汉马运会暨中国·武汉赛马节',k:'sport',s:'11-14',e:'11-16',l:'11 月中下旬',x:'武汉商学院驭马体育公园（汉南）；场地障碍赛、盛装舞步、马背体操、跑马射箭、纯血马和伊犁马速度赛，还有马术嘉年华和亲子游戏。2025 年是 11/28–30（第 21 届），2026 年 11/14 开幕；每年日期不同，以官宣为准'},
+  {n:'世界市长对话·武汉（国际友好城市合作大会）',k:'expo',s:'09-19',e:'09-19',l:'约 9 月',x:'2026 年 9 月 19 日；仰光、曼彻斯特、开普敦、大邱等友好城市市长参加。是否每年举办待确认'},
+  {n:'中非创新合作与发展论坛',k:'expo',s:'11-10',e:'11-13',l:'约 11 月中旬',x:'2026 年 11 月 10–13 日；40 个非洲国家约 800 名代表；中非青年创新创业大赛决赛同期举行。是否每年在武汉待确认'},
+  {n:'全球治理·东湖论坛',k:'expo',s:'11-15',e:'11-16',l:'约 11 月',x:'2025 年第十一届，主题“全球南方国家的治理创新”；具体日期以官宣为准'},
+  {n:'全国楚商高尔夫联赛',k:'golf',s:'09-15',e:'11-15',l:'约秋季（9–11 月），以官宣为准',x:'各地湖北商会、楚商球会组队参赛的湖北籍企业家高尔夫联赛，约 2016 年起每年一届，先在各地举行选拔赛再办总决赛；地点和日期每年不同'},
+  {n:'光谷马拉松',k:'sport',s:'11-15',e:'11-15',l:'11 月中旬',x:'2026 年 11 月 15 日（周日）鸣枪：华科大南一门起跑，全马终点未来科技城，半马终点光谷生态大走廊 LOGO 广场；之后年份日期以官宣为准'},
+  {n:'华农“异曲同工”毕业巡游',k:'school',s:'06-13',e:'06-13',l:'6 月中旬',x:'2026 年是 6 月 13 日晚 7 点：16 台现代农机装扮成花车，16 个学院方阵跟随，校领导站在联合收割机上挥校旗。之后年份日期以学校通知为准'},
+  {n:'华农毕业典礼、健康毕业餐',k:'school',s:'06-14',e:'06-14',l:'6 月中旬',x:'2026 年毕业餐在 6 月 14 日，菜全是各学院的科研成果：双水双绿小龙虾、无肌间刺草鱼、楚乡黑猪肉、华墨香黑米饭、伦晚脐橙；毕业季还有荧光夜跑和草坪音乐会。典礼具体日期以学校通知为准'},
+  {n:'华农迎新日',k:'school',s:'08-31',e:'08-31',l:'8 月底',x:'2026 级新生 8 月 31 日报到，迎新季主题“开端”，有 131 项文化活动。之后年份日期以学校通知为准'},
+  {n:'华中农业大学校庆日',k:'school',s:'10-02',e:'10-02',l:'10 月 2 日',x:'建校于 1898 年（张之洞创办湖北农务学堂）',anniv:1898},
+  {n:'武汉国际车展',k:'expo',s:'10-30',e:'11-03',l:'10 月底–11 月初',x:'东风主场，近 140 个品牌'},
+  {n:'东湖、园博园新春灯会',k:'local',s:'01-25',e:'02-25',l:'春节前–元宵',x:'每年举办地和日期不同，常见在东湖、园博园、黄鹤楼；以官宣为准'},
+  {n:'武汉植物园郁金香展',k:'local',s:'03-01',e:'04-10',l:'3 月–4 月初',x:'磨山脚下的中科院武汉植物园；花期看气温'},
+  {n:'黄陂云雾山杜鹃花节',k:'local',s:'04-05',e:'04-30',l:'4 月',x:'木兰云雾山的野生杜鹃花海；离市区约 1.5 小时车程'},
+  {n:'武汉小龙虾季',k:'local',s:'05-01',e:'07-31',l:'5–7 月',x:'油焖大虾、蒸虾；万松园、雪松路一带最集中'},
+  {n:'东湖荷花节',k:'local',s:'06-15',e:'08-31',l:'6 月中–8 月',x:'东湖荷园，荷花品种很多；清晨去最好'},
+  {n:'武汉金秋菊展',k:'local',s:'10-25',e:'11-25',l:'10 月底–11 月',x:'解放公园、中山公园等多个公园同时布展；主会场每年不同'},
+  {n:'汉口江滩芦花、东湖水杉红叶',k:'local',s:'11-05',e:'12-10',l:'11 月–12 月上旬',x:'汉口江滩芦苇荡 11 月最盛；东湖落雁、磨山的水杉 11 月底到 12 月初变红'},
+  {n:'洪山菜薹、排骨藕汤季',k:'local',s:'11-20',e:'02-20',l:'11 月下旬–次年 2 月',x:'洪山菜薹霜后最甜；冬天煨藕汤要选粉藕'},
+  {n:'江汉关跨年钟声',k:'local',s:'12-31',e:'12-31',l:'12 月 31 日夜',x:'江汉路、江汉关跨年倒数；人非常多，常有交通管制'},
+  {n:'武汉茶博会',k:'expo',s:'09-11',e:'09-14',l:'约 9 月',x:'2026 年是 9 月 11–14 日，在武汉国际会展中心；之后年份以官宣为准'},
+  {n:'中国机博会暨武汉工博会',k:'expo',s:'09-22',e:'09-24',l:'约 9 月下旬',x:'2026 年是 9 月 22–24 日，在武汉国际博览中心（汉阳）；之后年份以官宣为准'},
+  // ---- 奥本 ----
+  {n:'奥本 Mardi Gras 游行',k:'au',s:'02-06',e:'02-06',l:'2 月',x:'奥本市中心的狂欢节游行和 Krewe Krawl；日期以官宣为准'},
+  {n:'A-Day 春季橄榄球赛',k:'au',s:'04-10',e:'04-10',l:'约 4 月',x:'Jordan-Hare 球场；赛前有 Tiger Walk，还有军乐队表演；日期以官宣为准'},
+  {n:'Tiger Giving Day（奥本捐赠日）',k:'au',s:'09-09',e:'09-09',l:'约 9 月',x:'24 小时线上筹款；2025 年是 9 月 10 日（第 10 届），农学院也有项目参加。日期以官宣为准'},
+  {n:'Auburn Oktoberfest',k:'au',s:'10-10',e:'10-10',l:'10 月',x:'在 Ag Heritage Park 办的啤酒节；日期以官宣为准'},
+  {n:'Hey Day（奥本打招呼日）',k:'au',s:'10-14',e:'10-14',l:'10 月中旬的周三',x:'1947 年开始的传统，全校戴名牌互相说 Hey；2024 年是 10 月 16 日，2025 年是 10 月 15 日'},
+  {n:'Syrup Sopping Day（Loachapoka）',k:'au',s:'10-17',e:'10-17',l:'10 月',x:'奥本旁边的 Loachapoka，在 Pioneer Park；每年约 1 万人，重现 19 世纪末的乡村生活。日期以官宣为准'},
+  {n:'奥本市中心圣诞游行',k:'au',s:'12-05',e:'12-05',l:'12 月初',x:'Downtown Auburn；日期以官宣为准'},
+  // ---- 荆州 ----
+  {n:'荆州古城新春游园、灯会',k:'jzlocal',s:'01-28',e:'02-25',l:'春节–元宵',x:'古城墙、东门宾阳楼一带；春节期间有开城仪式和夜游，具体安排以官宣为准'},
+  {n:'荆州马拉松',k:'jzsport',s:'03-28',e:'03-28',l:'3 月底',x:'2026 年是 3 月 29 日；起点荆州文化体育中心，经古城墙、宾阳楼、凤凰大桥、园博园，半马终点在方特东方神画。之后年份以官宣为准'},
+  {n:'楚超：荆州主场',k:'jzsport',s:'04-01',e:'11-10',l:'4–11 月',x:'湖北省城市足球联赛，主场在荆州奥体中心；赛程以官方公布为准'},
+  {n:'监利小龙虾季',k:'jzlocal',s:'04-15',e:'06-30',l:'4 月中–6 月',x:'监利是小龙虾养殖大县；具体节庆活动以当地官宣为准'},
+  {n:'洪湖赏荷季',k:'jzlocal',s:'06-15',e:'08-20',l:'6 月中–8 月',x:'洪湖蓝田生态旅游区一带，7 月最盛；可以坐船进荷花荡'},
+  {n:'公安葡萄采摘季',k:'jzlocal',s:'07-01',e:'08-15',l:'7 月–8 月中',x:'公安县埠河一带葡萄园；离荆州城区过江就到'},
+  {n:'楚文化节（荆州）',k:'jzlocal',s:'09-20',e:'09-27',l:'约 9 月',x:'2025 年第二届是 9 月 20 日在荆州古城开幕，期间有 20 多项演出、展览和非遗活动；首届在 2023 年 4 月。每届日期以官宣为准'},
+  {n:'洪湖清水蟹上市',k:'jzlocal',s:'09-25',e:'11-20',l:'9 月底–11 月',x:'洪湖清水大闸蟹；中秋到立冬前后最肥'},
+  // ---- 孩子·上学（武汉）----
+  {n:'武汉中小学、幼儿园放寒假',k:'edu',s:'01-25',e:'01-25',l:'1 月下旬，随春节变',x:'日期是估计。2026 年义务教育学校、幼儿园 1 月 31 日放假，高中 2 月 7 日；每年以武汉市教育局校历为准'},
+  {n:'武汉中小学、幼儿园春季开学',k:'edu',s:'02-24',e:'02-24',l:'元宵节后',x:'日期是估计。2026 年是 3 月 4 日（元宵后第一天）；每年以武汉市教育局校历为准'},
+  {n:'楚才作文竞赛',k:'edu',s:'03-25',e:'04-10',l:'约 3 月底–4 月',x:'武汉办了几十年的中小学生作文赛事；具体日期以官宣为准'},
+  {n:'武汉中考志愿填报',k:'edu',s:'05-08',e:'05-11',l:'5 月上旬',x:'2026 年是 5 月 8 日 8 点至 11 日 17 点，在市中招平台网上填报（考前填）'},
+  {n:'武汉小学、幼儿园新生报名登记',k:'edu',s:'05-15',e:'06-15',l:'约 5–6 月',x:'各区时间不同，以区教育局公告为准'},
+  {n:'六一儿童节',k:'edu',s:'06-01',e:'06-01',l:'6 月 1 日',x:'2026 年武昌、江岸、江汉、硚口、洪山、青山、汉阳、东湖高新 8 个区 14 岁以下放假一天；武汉动物园、黄鹤楼、园博园等对儿童免票；武汉科技馆要提前预约'},
+  {n:'高考（湖北）',k:'edu',s:'06-07',e:'06-09',l:'6 月 7–9 日',x:'考点周边交通管制、禁鸣；开车尽量绕行'},
+  {n:'武汉小学毕业考试',k:'edu',s:'06-13',e:'06-13',l:'6 月中旬',x:'2026 年六年级是 6 月 13 日'},
+  {n:'大学毕业典礼季',k:'edu',s:'06-15',e:'06-30',l:'6 月中下旬',x:'武大、华科、华农等高校的毕业典礼和毕业照；具体日期看各校通知'},
+  {n:'武汉中考',k:'edu',s:'06-20',e:'06-22',l:'6 月 20–22 日',x:'2026 年有 10.6 万考生；第一天语文、数学，第二天外语、物理化学，第三天道法历史'},
+  {n:'湖北高考出分',k:'edu',s:'06-25',e:'06-25',l:'6 月 25 日前后',x:'出分后几天开始填志愿；以省教育考试院公告为准'},
+  {n:'武汉中考出分、划线',k:'edu',s:'07-01',e:'07-03',l:'约 7 月初',x:'以武汉市招考办公告为准'},
+  {n:'武汉中小学、幼儿园放暑假',k:'edu',s:'07-04',e:'07-04',l:'7 月初',x:'2026 年是 7 月 4 日；期末考试在 6 月 30 日–7 月 2 日'},
+  {n:'大学新生报到',k:'edu',s:'08-28',e:'09-10',l:'8 月底–9 月上旬',x:'各校不同；武汉有一百多万在校大学生，那几天火车站和地铁很挤'},
+  {n:'武汉中小学、幼儿园秋季开学',k:'edu',s:'09-01',e:'09-01',l:'9 月 1 日',x:'一年级、初一新生通常提前几天报到'},
+  {n:'教师节',k:'edu',s:'09-10',e:'09-10',l:'9 月 10 日',x:''},
+  {n:'全国硕士研究生考试',k:'edu',s:'12-19',e:'12-20',l:'12 月下旬',x:'以教育部公告为准'},
+  // ---- 亲情·礼俗 ----
+  {n:'清明祭扫高峰（武汉各陵园）',k:'fam',s:'03-20',e:'04-06',l:'3 月下旬–清明',x:'石门峰、九峰山、扁担山、龙泉山等陵园周边很堵，有的年份高峰日要预约；以武汉市民政局通告为准'},
+  // ---- 北京 ----
+  {n:'冰雪季：什刹海、颐和园、北海冰场',k:'bjlocal',s:'12-20',e:'02-15',l:'12 月底–2 月',x:'冰车、冰滑梯、溜冰；开放日期看结冰情况'},
+  {n:'全国两会',k:'bjgov',s:'03-04',e:'03-11',l:'3 月初',x:'全国人大 3 月 5 日开幕；期间天安门周边管控较严'},
+  {n:'中关村论坛',k:'bjexpo',s:'03-25',e:'03-29',l:'约 3 月底',x:'科技创新论坛，在中关村国际创新中心举办'},
+  {n:'玉渊潭樱花节',k:'bjlocal',s:'03-15',e:'04-20',l:'3 月中–4 月中',x:'北京最大的樱花园；花期看气温'},
+  {n:'北京半程马拉松',k:'bjsport',s:'04-12',e:'04-12',l:'4 月',x:'2026 年 4 月 12 日：天安门广场起跑，终点奥林匹克公园，约 2.2 万人'},
+  {n:'北京国际电影节',k:'bjculture',s:'04-16',e:'04-23',l:'4 月中下旬',x:'影展和天坛奖；具体日期以官宣为准'},
+  {n:'中超：北京国安主场',k:'bjsport',s:'03-01',e:'11-08',l:'3–11 月',x:'新工体；赛程以俱乐部公布为准'},
+  {n:'CBA：北京首钢、北控主场',k:'bjsport',s:'10-15',e:'04-15',l:'10 月–次年 4 月',x:'首钢在五棵松，北控在凯撒宫'},
+  {n:'草莓音乐节（北京）',k:'bjculture',s:'05-01',e:'05-03',l:'五一假期',x:'具体日期以官宣为准'},
+  {n:'北京国际图书博览会（图博会）',k:'bjexpo',s:'06-17',e:'06-21',l:'约 6 月中旬',x:'国家会议中心；具体日期以官宣为准'},
+  {n:'世界机器人大会',k:'bjexpo',s:'08-08',e:'08-12',l:'约 8 月',x:'亦庄北人亦创国际会展中心；具体日期以官宣为准'},
+  {n:'中国国际服务贸易交易会（服贸会）',k:'bjexpo',s:'09-09',e:'09-13',l:'9 月上中旬',x:'2026 年 9 月 9–13 日在首钢园，最后两天是公众开放日'},
+  {n:'北京国际设计周',k:'bjculture',s:'09-20',e:'10-07',l:'9 月下旬–国庆',x:'大栅栏、798、首钢园等分会场'},
+  {n:'怀柔长城马拉松',k:'bjsport',s:'09-27',e:'09-27',l:'9 月底',x:'2026 年 9 月 27 日，在慕田峪长城一带'},
+  {n:'中国网球公开赛（中网）',k:'bjsport',s:'09-28',e:'10-11',l:'9 月底–10 月中',x:'2026 年：9 月 28 日开打，10 月 6 日男单决赛、10 月 11 日女单决赛'},
+  {n:'国庆：天安门花坛、升旗',k:'bjgov',s:'10-01',e:'10-07',l:'10 月 1–7 日',x:'看升旗需提前在网上预约'},
+  {n:'北京国际音乐节',k:'bjculture',s:'10-08',e:'10-31',l:'约 10 月',x:'古典音乐和歌剧，以官宣为准'},
+  {n:'北京马拉松',k:'bjsport',s:'10-18',e:'10-18',l:'10 月中下旬',x:'2026 年 10 月 18 日开跑；天安门起跑、奥林匹克公园终点'},
+  {n:'香山红叶节',k:'bjlocal',s:'10-15',e:'11-15',l:'10 月中–11 月中',x:'红叶最佳通常在 10 月底到 11 月初；周末很挤'},
+  {n:'银杏季：钓鱼台、地坛、三里河',k:'bjlocal',s:'10-25',e:'11-15',l:'10 月底–11 月中',x:'钓鱼台国宾馆外的银杏大道最有名'},
+  // ---- 美食节 ----
+  {n:"海南国际椰子节",k:'fcn',s:'03-28',e:'04-08',l:"3 月底–4 月初",x:"海南各市县；椰子鸡、椰子饭、彩车巡游"},
+  {n:"西湖龙井开茶节",k:'fcn',s:'03-25',e:'04-05',l:"3 月底–4 月初",x:"杭州龙井村、梅家坞；明前茶采摘、炒茶体验"},
+  {n:"大兴西瓜节",k:'fcn',s:'05-28',e:'06-05',l:"5 月底–6 月初",x:"北京大兴庞各庄；西瓜品鉴、西瓜擂台赛"},
+  {n:"潜江龙虾节",k:'fcn',s:'05-25',e:'06-10',l:"5 月底–6 月",x:"湖北潜江，离武汉约 2 小时；油焖大虾发源地，万人龙虾宴"},
+  {n:"合肥龙虾节",k:'fcn',s:'05-20',e:'07-10',l:"5–7 月",x:"安徽合肥；十三香、蒜泥、冰镇等各种口味"},
+  {n:"盱眙国际龙虾节",k:'fcn',s:'06-12',e:'06-20',l:"6 月中旬",x:"江苏盱眙；十三香小龙虾、万人龙虾宴"},
+  {n:"余姚、仙居杨梅节",k:'fcn',s:'06-10',e:'06-30',l:"6 月",x:"浙江余姚、台州仙居；东魁杨梅、荸荠种杨梅采摘"},
+  {n:"增城、从化荔枝节",k:'fcn',s:'06-15',e:'07-10',l:"6 月中–7 月初",x:"广州增城、从化；挂绿、糯米糍、桂味荔枝"},
+  {n:"哈尔滨国际啤酒节",k:'fcn',s:'07-10',e:'07-25',l:"7 月",x:"哈尔滨；冰镇哈啤、红肠、俄式烧烤"},
+  {n:"大连国际啤酒节",k:'fcn',s:'07-15',e:'08-05',l:"7 月中–8 月初",x:"大连星海广场一带；啤酒配海鲜"},
+  {n:"新疆哈密瓜节",k:'fcn',s:'07-15',e:'08-15',l:"7–8 月",x:"新疆哈密；哈密瓜品鉴、瓜农市集"},
+  {n:"楚雄野生菌美食文化节",k:'fcn',s:'07-10',e:'08-20',l:"7–8 月",x:"云南楚雄；松茸、鸡枞，“菌王”争霸，菌子火锅"},
+  {n:"那达慕大会",k:'fcn',s:'07-10',e:'07-20',l:"7 月",x:"内蒙古各盟市；手扒肉、烤全羊、奶茶，摔跤赛马"},
+  {n:"青岛国际啤酒节",k:'fcn',s:'07-18',e:'08-16',l:"7 月中–8 月中",x:"青岛西海岸金沙滩啤酒城；袋装啤酒、海鲜，亚洲最大的啤酒节"},
+  {n:"拉萨雪顿节",k:'fcn',s:'08-10',e:'08-18',l:"藏历六月底，约 8 月",x:"拉萨；“雪顿”就是吃酸奶，还有晒佛、藏戏"},
+  {n:"南海开渔节",k:'fcn',s:'08-16',e:'08-16',l:"8 月 16 日前后",x:"广东、广西、海南沿海；南海休渔结束，鲜鱼上市"},
+  {n:"吐鲁番葡萄节",k:'fcn',s:'08-20',e:'08-31',l:"8 月下旬",x:"新疆吐鲁番葡萄沟；葡萄品鉴、晾房看葡萄干"},
+  {n:"淮南豆腐文化节",k:'fcn',s:'09-15',e:'09-15',l:"9 月 15 日",x:"安徽淮南，豆腐发源地；豆腐宴"},
+  {n:"东海开渔节（象山、舟山）",k:'fcn',s:'09-16',e:'09-16',l:"9 月 16 日前后",x:"浙江宁波象山、舟山；千船出海，“第一网”海鲜宴"},
+  {n:"阳澄湖大闸蟹开湖节",k:'fcn',s:'09-20',e:'09-25',l:"9 月下旬",x:"江苏苏州；开湖后到 11 月是吃蟹最好的时候"},
+  {n:"梁子湖螃蟹节",k:'fcn',s:'09-25',e:'10-15',l:"9 月底–10 月",x:"湖北鄂州、武汉江夏一带，离江夏很近；梁子湖大闸蟹开捕"},
+  {n:"中国（贵州）国际酒类博览会",k:'fcn',s:'09-05',e:'09-08',l:"9 月",x:"贵阳；茅台等白酒展销"},
+  {n:"洛川、烟台苹果节",k:'fcn',s:'10-10',e:'10-25',l:"10 月",x:"陕西洛川、山东烟台；苹果采摘和博览会"},
+  {n:"中国（成都）国际美食节",k:'fcn',s:'10-20',e:'11-10',l:"10–11 月",x:"成都；川菜、火锅和各地小吃，具体日期每年不同"},
+  {n:"柳州螺蛳粉美食文化节",k:'fcn',s:'11-01',e:'11-15',l:"约 11 月",x:"广西柳州；螺蛳粉大赛、夜市"},
+  {n:"阿克苏苹果节",k:'fcn',s:'11-08',e:'11-20',l:"11 月",x:"新疆阿克苏；冰糖心苹果"},
+  {n:"佛罗里达草莓节（Florida Strawberry Festival）",u:"https://flstrawberryfestival.com/",k:'fus',s:'03-04',e:'03-14',l:"3 月上中旬，11 天（2027：3/4–3/14）",x:"佛州 Plant City；草莓酥饼、草莓奶昔，还有演唱会"},
+  {n:"南海滩美酒美食节（SOBEWFF）",u:"https://sobewff.org/",k:'fus',s:'02-19',e:'02-22',l:"2 月下旬",x:"迈阿密南海滩；名厨品鉴会，全美最大的美食美酒节之一"},
+  {n:"维达利亚洋葱节（Vidalia Onion Festival）",k:'fal',s:'04-23',e:'04-26',l:"4 月下旬",x:"佐治亚州 Vidalia，甜洋葱之乡；油炸洋葱圈、洋葱烹饪赛"},
+  {n:"佛蒙特枫糖节（Vermont Maple Festival）",u:"https://www.vtmaplefestival.org/",k:'fus',s:'04-24',e:'04-26',l:"4 月最后一个完整周末",x:"佛蒙特州 St. Albans；枫糖浆、枫糖雪糖（sugar on snow）"},
+  {n:"世界鲶鱼节（World Catfish Festival）",k:'fal',s:'04-04',e:'04-04',l:"4 月第一个周六",x:"密西西比州 Belzoni；炸鲶鱼、吃鲶鱼比赛"},
+  {n:"布罗布里奇小龙虾节（Breaux Bridge Crawfish Festival）",u:"https://bbcrawfest.com/",k:'fus',s:'05-01',e:'05-03',l:"5 月第一个周末",x:"路易斯安那州，“世界小龙虾之都”；Cajun 音乐和煮小龙虾"},
+  {n:"孟菲斯五月烧烤大赛（Memphis in May BBQ）",u:"https://memphisinmay.org/",k:'fal',s:'05-13',e:'05-15',l:"5 月中旬",x:"田纳西州孟菲斯；世界烧烤锦标赛，猪肉烧烤为主"},
+  {n:"国际饼干节（International Biscuit Festival）",k:'fal',s:'05-15',e:'05-17',l:"5 月中旬",x:"田纳西州诺克斯维尔；南方早餐饼干"},
+  {n:"科迪亚克帝王蟹节（Kodiak Crab Festival）",k:'fus',s:'05-22',e:'05-25',l:"阵亡将士纪念日周末",x:"阿拉斯加 Kodiak；帝王蟹"},
+  {n:"泥虫狂欢节（Mudbug Madness）",k:'fus',s:'05-22',e:'05-25',l:"阵亡将士纪念日周末",x:"路易斯安那州 Shreveport；小龙虾、Cajun 菜"},
+  {n:"卡斯特罗维尔洋蓟节（Artichoke Festival）",k:'fus',s:'05-30',e:'05-31',l:"5 月底–6 月初",x:"加州 Castroville，洋蓟之都；炸洋蓟"},
+  {n:"佐治亚桃子节（Georgia Peach Festival）",k:'fal',s:'06-12',e:'06-13',l:"6 月第二个周末",x:"佐治亚州 Fort Valley 和 Byron；号称世界最大的桃子馅饼（cobbler）"},
+  {n:"阿斯彭美食美酒经典（Food & Wine Classic）",k:'fus',s:'06-18',e:'06-20',l:"6 月中旬",x:"科罗拉多州 Aspen；《Food & Wine》杂志主办"},
+  {n:"全国樱桃节（National Cherry Festival）",u:"https://www.cherryfestival.org/",k:'fus',s:'06-27',e:'07-04',l:"6 月底–7 月初",x:"密歇根州 Traverse City；樱桃派、吐樱桃核比赛"},
+  {n:"基韦斯特青柠节（Key Lime Festival）",k:'fus',s:'07-02',e:'07-05',l:"7 月 4 日周末",x:"佛州 Key West；青柠派"},
+  {n:"吉尔罗伊大蒜节（Gilroy Garlic Festival）",u:"https://gilroygarlicfestival.com/",k:'fus',s:'07-24',e:'07-26',l:"约 7 月底",x:"加州；2019 年枪击后停办多年，2025 年换场地小规模回归"},
+  {n:"缅因龙虾节（Maine Lobster Festival）",u:"https://mainelobsterfestival.com/",k:'fus',s:'07-29',e:'08-02',l:"7 月底–8 月初",x:"缅因州 Rockland；龙虾晚餐、海神游行"},
+  {n:"爱荷华州博览会（Iowa State Fair）",u:"https://www.iowastatefair.org/",k:'fus',s:'08-13',e:'08-23',l:"8 月中旬，11 天",x:"Des Moines；黄油雕牛、各种“串起来的”炸物"},
+  {n:"哈奇辣椒节（Hatch Chile Festival）",k:'fus',s:'09-05',e:'09-06',l:"劳动节周末",x:"新墨西哥州 Hatch；烤青辣椒"},
+  {n:"花生煮节（Peanut Boil Festival）",k:'fal',s:'09-04',e:'09-06',l:"劳动节周末",x:"阿拉巴马州 Luverne，离奥本约 1.5 小时；水煮花生"},
+  {n:"世界炸鸡节（World Chicken Festival）",u:"https://chickenfestival.com/",k:'fal',s:'09-24',e:'09-27',l:"9 月下旬",x:"肯塔基州 London（肯德基上校的起家地）；巨型平底锅炸鸡"},
+  {n:"亚特兰大美食美酒节（Atlanta Food & Wine）",k:'fal',s:'09-17',e:'09-20',l:"约 9 月",x:"亚特兰大，离奥本约 1.5 小时；美国南方菜和名厨"},
+  {n:"芝加哥美食节（Taste of Chicago）",k:'fus',s:'09-11',e:'09-13',l:"约 9 月",x:"芝加哥 Grant Park；深盘披萨、芝加哥热狗，免费入场"},
+  {n:"得州州博会（State Fair of Texas）",u:"https://bigtex.com/",k:'fus',s:'09-25',e:'10-18',l:"9 月底–10 月中，24 天",x:"达拉斯 Fair Park；炸黄油、炸物大赛"},
+  {n:"美国皇家烧烤世界系列赛（American Royal BBQ）",u:"https://www.americanroyal.com/",k:'fus',s:'09-17',e:'09-20',l:"约 9 月",x:"堪萨斯城；全球规模最大的烧烤比赛之一"},
+  {n:"全国虾节（National Shrimp Festival）",u:"https://www.myshrimpfest.com/",k:'fal',s:'10-08',e:'10-11',l:"10 月第二个周末",x:"阿拉巴马州 Gulf Shores，离奥本约 4 小时；海鲜、海滩"},
+  {n:"瑟克尔维尔南瓜节（Circleville Pumpkin Show）",u:"https://www.pumpkinshow.com/",k:'fus',s:'10-21',e:'10-24',l:"10 月第三个周三到周六",x:"俄亥俄州；巨型南瓜派、南瓜称重赛"},
+  {n:"香肠节（Wurstfest）",u:"https://wurstfest.com/",k:'fus',s:'11-06',e:'11-15',l:"11 月上中旬，10 天",x:"得州 New Braunfels；德式香肠、啤酒"},
+  {n:"科纳咖啡节（Kona Coffee Cultural Festival）",u:"https://konacoffeefest.com/",k:'fus',s:'11-06',e:'11-15',l:"11 月上中旬",x:"夏威夷大岛 Kona；咖啡农场开放、杯测比赛"},
+  {n:"全国花生节（National Peanut Festival）",u:"https://www.nationalpeanutfestival.com/",k:'fal',s:'11-06',e:'11-15',l:"11 月上中旬，约 10 天",x:"阿拉巴马州多森，离奥本约 2 小时；游行、农业展、花生小吃"},
+  {n:"阿尔巴白松露节",u:"https://www.fieradeltartufo.org/",k:'feu',s:'10-10',e:'12-06',l:"10 月中–12 月初",x:"意大利皮埃蒙特；周末松露市集，11 月有世界白松露拍卖"},
+];
+
+/* Dated one-off events. Times are US Central (CT). */
+const ONEOFF=[
+  // Auburn football 2026 (remaining)
+  {n:'奥本橄榄球 vs 桑福德',k:'aufb',d:'2026-11-21',t:'下午 2:30 CT',p:'主场，Jordan-Hare 球场'},
+  {n:'Iron Bowl：奥本橄榄球 @ 阿拉巴马',k:'aufb',d:'2026-11-28',t:'时间待定',p:'客场，Tuscaloosa；常规赛收官'},
+  // Auburn men's basketball 2026-27
+  {n:'奥本男篮 vs 堪萨斯 / UNLV',k:'aubb',d:'2026-11-18',t:'时间待定',p:'Players Era 8，拉斯维加斯'},
+  {n:'奥本男篮：Players Era 第三场',k:'aubb',d:'2026-11-19',t:'对手待定',p:'Players Era 8，拉斯维加斯'},
+  {n:'奥本男篮 vs 利普斯科姆',k:'aubb',d:'2026-11-24',p:'主场'},
+  {n:'奥本男篮 @ 克莱姆森',k:'aubb',d:'2026-12-01',p:'SEC/ACC 挑战赛，客场'},
+  {n:'奥本男篮 vs 东肯塔基',k:'aubb',d:'2026-12-06',p:'主场'},
+  {n:'奥本男篮 vs 阿拉巴马州立',k:'aubb',d:'2026-12-13',p:'主场'},
+  {n:'奥本男篮 vs 中田纳西',k:'aubb',d:'2026-12-15',p:'Rocket City Classic，亨茨维尔'},
+  {n:'奥本男篮 vs 威斯康星',k:'aubb',d:'2026-12-19',p:'中立场，纳什维尔 Bridgestone Arena'},
+  {n:'奥本男篮 vs 理海',k:'aubb',d:'2026-12-22',p:'主场'},
+  {n:'奥本男篮 vs 摩根州立',k:'aubb',d:'2026-12-29',p:'主场'},
+  {n:'奥本男篮 @ 德州农工',k:'aubb',d:'2027-01-02',t:'晚 7:30 CT',p:'SEC 客场 · SEC Network'},
+  {n:'奥本男篮 vs 田纳西',k:'aubb',d:'2027-01-06',t:'晚 6:00 CT',p:'SEC 主场 · ESPN2/ESPNU'},
+  {n:'奥本男篮 vs 佐治亚',k:'aubb',d:'2027-01-09',t:'中午 12:00 CT',p:'SEC 主场 · SEC Network'},
+  {n:'奥本男篮 @ 德克萨斯',k:'aubb',d:'2027-01-12',t:'晚 8:00 CT',p:'SEC 客场 · ESPN/ESPN2'},
+  {n:'奥本男篮 vs 密西西比大学',k:'aubb',d:'2027-01-16',t:'晚 7:30 CT',p:'SEC 主场 · SEC Network'},
+  {n:'奥本男篮 @ 范德堡',k:'aubb',d:'2027-01-19',t:'晚 6:00 CT',p:'SEC 客场 · SEC Network'},
+  {n:'奥本男篮 @ LSU',k:'aubb',d:'2027-01-23',t:'下午 2:30 CT',p:'SEC 客场 · SEC Network'},
+  {n:'奥本男篮 vs 密西西比州立',k:'aubb',d:'2027-01-26',t:'晚 6:00 CT',p:'SEC 主场 · SEC Network'},
+  {n:'奥本男篮 @ 阿拉巴马',k:'aubb',d:'2027-01-30',t:'下午 5:00/5:30 CT',p:'SEC 客场 · ESPN2'},
+  {n:'奥本男篮 vs 俄克拉荷马',k:'aubb',d:'2027-02-06',t:'下午 2:30 CT',p:'SEC 主场 · SEC Network'},
+  {n:'奥本男篮 vs 佛罗里达',k:'aubb',d:'2027-02-09',t:'晚 6:00 CT',p:'SEC 主场 · ESPN2'},
+  {n:'奥本男篮 @ 南卡罗来纳',k:'aubb',d:'2027-02-13',t:'下午 5:00 CT',p:'SEC 客场 · SEC Network'},
+  {n:'奥本男篮 @ 阿肯色',k:'aubb',d:'2027-02-16',t:'晚 8:00 CT',p:'SEC 客场 · ESPN/ESPN2'},
+  {n:'奥本男篮 vs 密苏里',k:'aubb',d:'2027-02-20',t:'上午 11:00 CT',p:'SEC 主场 · ESPN'},
+  {n:'奥本男篮 vs LSU',k:'aubb',d:'2027-02-24',t:'晚 6:00 CT',p:'SEC 主场 · SEC Network'},
+  {n:'奥本男篮 @ 肯塔基',k:'aubb',d:'2027-02-27',t:'下午 3:00/3:30 CT',p:'SEC 客场 · ESPN/ESPN2'},
+  {n:'奥本男篮 @ 密西西比大学',k:'aubb',d:'2027-03-02',t:'晚 9:00 CT',p:'SEC 客场 · SEC Network'},
+  {n:'奥本男篮 vs 阿拉巴马',k:'aubb',d:'2027-03-06',t:'下午 5:00 CT',p:'SEC 主场收官 · SEC Network'},
+  {n:'SEC 男篮锦标赛',k:'aubb',d:'2027-03-10',e:'2027-03-14',p:'纳什维尔 Bridgestone Arena'},
+  // International: Olympics, World Cup
+  {n:'亚洲杯足球赛',k:'intl',d:'2027-01-07',e:'2027-02-05',p:'沙特阿拉伯；中国队参赛'},
+  {n:'女足世界杯',k:'intl',d:'2027-06-24',e:'2027-07-25',p:'巴西'},
+  {n:'洛杉矶夏季奥运会',k:'intl',d:'2028-07-14',e:'2028-07-30',p:'洛杉矶'},
+  {n:'法国阿尔卑斯冬奥会',k:'intl',d:'2030-02-01',e:'2030-02-17',p:'法国阿尔卑斯'},
+  {n:'男足世界杯',k:'intl',d:'2030-06-08',e:'2030-07-21',p:'摩洛哥、葡萄牙、西班牙（另有 3 场在南美）；具体日期 FIFA 尚未公布，这里先放在 6–7 月',tbd:true},
+  // ---- NBA、篮球、足球 ----
+  {n:'NBA 常规赛（2026–27 赛季）',k:'nba',d:'2026-10-20',e:'2027-04-11',p:'10 月 20 日揭幕；卫冕冠军是纽约尼克斯（总决赛赢马刺）',u:'https://www.nba.com/schedule'},
+  {n:'NBA 杯小组赛',k:'nba',d:'2026-10-30',e:'2026-11-27',p:'剩下的比赛日：11 月 20、24、25、27 日；大多在周五晚',u:'https://www.nba.com/schedule'},
+  {n:'NBA 杯八强赛',k:'nba',d:'2026-12-04',e:'2026-12-05',p:'在排名高的球队主场打；Prime Video 转播'},
+  {n:'NBA 杯半决赛',k:'nba',d:'2026-12-08',e:'2026-12-09',p:'今年改在球队主场打，不再去拉斯维加斯'},
+  {n:'NBA 杯决赛',k:'nba',d:'2026-12-11',p:'印第安纳波利斯 Hinkle Fieldhouse（巴特勒大学的老球馆）；这场不计入常规赛战绩'},
+  {n:'NBA 圣诞大战',k:'nba',d:'2026-12-25',p:'全天 5 场'},
+  {n:'NBA 曼彻斯特赛：马刺 vs 鹈鹕',k:'nba',d:'2027-01-17',p:'英国曼彻斯特'},
+  {n:'NBA 交易截止日',k:'nba',d:'2027-02-11',p:'周四'},
+  {n:'NBA 全明星周末',k:'nba',d:'2027-02-19',e:'2027-02-21',p:'菲尼克斯'},
+  {n:'NBA 附加赛、季后赛开打',k:'nba',d:'2027-04-13',e:'2027-04-18',p:'日期是按往年估计，联盟还没公布',tbd:true},
+  {n:'NBA 总决赛',k:'nba',d:'2027-06-03',e:'2027-06-20',p:'联盟只确认在 6 月，具体日期未公布',tbd:true},
+  {n:'NBA 选秀',k:'nba',d:'2027-06-23',p:'按往年在 6 月下旬，日期未公布',tbd:true},
+  {n:'CBA 常规赛（2026–27 赛季）',k:'bball',d:'2026-10-16',e:'2027-04-07',p:'46 轮 460 场；卫冕冠军上海。窗口期 11/4–12/3 和 2/2–3/4 停赛'},
+  {n:'CBA 俱乐部杯（小组赛有武汉赛区）',k:'bball',d:'2026-11-04',e:'2026-12-03',p:'在联赛窗口期内打，具体比赛日以官宣为准；小组赛在武汉、烟台、银川、琼海，决赛在南宁；24 支球队'},
+  {n:'CBA 全明星周末',k:'bball',d:'2027-03-05',e:'2027-03-07',p:'陕西西安，首次在西北地区举办'},
+  {n:'NCAA 疯狂三月（男篮）',k:'bball',d:'2027-03-16',e:'2027-04-05',p:'日期按惯例估计；奥本男篮能否参赛看 3 月中旬的 Selection Sunday',tbd:true},
+  {n:'CBA 季后赛',k:'bball',d:'2027-04-11',e:'2027-06-02',p:'3-5-5-7 赛制，总决赛七场四胜，最晚 6 月 2 日结束；4 月还有 CBA/NBL 升降级附加赛'},
+  {n:'男篮世界杯',k:'bball',d:'2027-08-27',e:'2027-09-12',p:'卡塔尔多哈，32 队 92 场；预选赛打到 2027 年 3 月 2 日，4 月抽签。成绩关系到 2028 奥运资格',u:'https://www.fiba.basketball/en/events/fiba-basketball-world-cup-2027'},
+  {n:'英超（2026–27 赛季）',k:'soccer',d:'2026-08-22',e:'2027-05-30',p:'卫冕冠军阿森纳；最后一轮 5 月 30 日，10 场同时开球',u:'https://www.premierleague.com/'},
+  {n:'美职联 MLS 杯决赛',k:'soccer',d:'2026-12-18',p:'美国职业足球大联盟总决赛'},
+  {n:'欧冠联赛阶段收官',k:'soccer',d:'2027-01-27',p:'最后一轮同时开球，决定谁直接晋级、谁打附加赛'},
+  {n:'欧冠淘汰赛开打',k:'soccer',d:'2027-02-16',p:'从附加赛打起，一直到 6 月决赛'},
+  {n:'英格兰足总杯决赛',k:'soccer',d:'2027-05-22',p:'温布利；个别来源写的是 5 月 15 日，以英足总官宣为准'},
+  {n:'欧洲五大联赛收官周',k:'soccer',d:'2027-05-22',e:'2027-05-30',p:'德甲 5 月 22 日、法甲 5 月 29 日、英超和意甲 5 月 30 日结束'},
+  {n:'欧联杯决赛',k:'soccer',d:'2027-05-26',p:'德国法兰克福',u:'https://www.uefa.com/uefaeuropaleague/'},
+  {n:'欧冠决赛',k:'soccer',d:'2027-06-05',p:'马德里大都会球场（马竞主场）；周六',u:'https://www.uefa.com/uefachampionsleague/'},
+  {n:'非洲国家杯',k:'soccer',d:'2027-06-19',e:'2027-07-17',p:'肯尼亚、乌干达、坦桑尼亚合办，24 队'},
+  {n:'欧洲杯',k:'soccer',d:'2028-06-09',e:'2028-07-09',p:'英国和爱尔兰合办；具体日期以欧足联公布为准',tbd:true},
+  {n:'美洲杯',k:'soccer',d:'2028-06-15',e:'2028-07-15',p:'主办地和日期都还没有公布，这里先放在 6–7 月',tbd:true},
+  {n:'世俱杯',k:'soccer',d:'2029-06-15',e:'2029-07-13',p:'第二届 32 队世俱杯；主办地和日期未公布，这里先放在 6–7 月',tbd:true},
+  // ---- 奥本大学 ----
+  {n:'奥本大学感恩节假期',k:'au',d:'2026-11-23',e:'2026-11-27',p:'11 月 25–27 日学校关门',u:'https://bulletin.auburn.edu/generalinformation/auburnuniversitycalendar'},
+  {n:'奥本校园节日点灯仪式',k:'au',d:'2026-11-29',p:'Samford Lawn；2025 年是 11 月 30 日（感恩节后的周日）下午 4:30，2026 年日期是估计',tbd:true},
+  {n:'奥本大学毕业典礼（秋季）',k:'au',d:'2026-12-12',p:'周六，全校各学院同一天；期末考试 12 月 7–11 日。农学院在哪一场看官网',u:'https://www.auburn.edu/academic/provost/commencement/ceremony-information/'},
+  {n:'奥本大学春季学期开学',k:'au',d:'2027-01-06',p:'周三',u:'https://bulletin.auburn.edu/generalinformation/auburnuniversitycalendar'},
+  {n:'奥本大学春假',k:'au',d:'2027-03-08',e:'2027-03-12',p:'',u:'https://bulletin.auburn.edu/generalinformation/auburnuniversitycalendar'},
+  {n:'奥本大学毕业典礼（春季）',k:'au',d:'2027-04-30',e:'2027-05-03',p:'各学院场次在感恩节那周公布，农学院在哪一天待定；期末考试 4 月 26–30 日',u:'https://www.auburn.edu/academic/provost/commencement/ceremony-information/'},
+  {n:'奥本大学毕业典礼（夏季）',k:'au',d:'2027-08-07',p:'周六，全校各学院同一天',u:'https://www.auburn.edu/academic/provost/commencement/ceremony-information/'},
+  {n:'奥本大学秋季学期开学',k:'au',d:'2027-08-16',p:''},
+  {n:'农学院返校周末、Ag Roundup',k:'auag',d:'2027-09-18',p:'2026 年是 9 月 25–26 日：周五 Student for a Day，周六返校赛前在 Ag Heritage Park 办 Ag Roundup（阿拉巴马农产品试吃、亲子游戏，为农学院奖学金筹款）。2027 年返校赛日期还没公布，这里先放在 9 月',tbd:true,u:'https://agriculture.auburn.edu/engagement/alumni/alumni-homecoming.php'},
+  {n:'奥本大学毕业典礼（秋季）',k:'au',d:'2027-12-11',p:'周六，全校各学院同一天',u:'https://www.auburn.edu/academic/provost/commencement/ceremony-information/'},
+  {n:'奥本大学毕业典礼（春季）',k:'au',d:'2028-05-05',p:'5 月 5 日（周五）开始，各学院场次待定',u:'https://www.auburn.edu/academic/provost/commencement/ceremony-information/'},
+  // ---- 荆州 ----
+  {n:'中国龙舟公开赛（荆州站）',k:'jzsport',d:'2027-06-05',e:'2027-06-06',p:'古城河九龙渊龙舟赛场。2027 年日期是估计：2025 年（5/24–25）和 2026 年（6/13–14）都在端午前一个周末。2026 年有 32 支队伍，监利队拿了大众县市区组冠军',tbd:true},
+  {n:'荆州端午：各县市龙舟和古城活动',k:'jzlocal',d:'2027-06-05',e:'2027-06-11',p:'2026 年 6/13–21 全市办了 120 多场活动：洪湖凤舟巡游、石首龙舟公开赛、监利乡镇划龙舟、公安水上嘉年华、松滋洈水龙舟体验，古城有战国袍旅拍、端午大典。2027 年日期是估计',tbd:true},
+  // ---- 亲情 ----
+  {n:'母亲节',k:'fam',d:'2027-05-09',p:'5 月第二个周日'},
+  {n:'父亲节',k:'fam',d:'2027-06-20',p:'6 月第三个周日'},
+  {n:'母亲节',k:'fam',d:'2028-05-14',p:'5 月第二个周日'},
+  {n:'父亲节',k:'fam',d:'2028-06-18',p:'6 月第三个周日'},
+  // ---- 高尔夫 ----
+  {n:"RSM Classic（PGA 赛季收官战）",k:'golf',d:'2026-11-19',e:'2026-11-22',p:"男子 · 佐治亚州 Sea Island，离奥本约 5 小时；奖金 740 万美元，前 100 名保住 2027 全卡；Golf Channel 中部时间 11 点起"},
+  {n:"CME 集团巡回锦标赛（LPGA 总决赛）",k:'golf',d:'2026-11-19',e:'2026-11-22',p:"女子 · 佛州那不勒斯 Tiburon；积分前 60 名参赛，冠军 400 万美元",u:"https://www.lpga.com/tournaments"},
+  {n:"Hero World Challenge（老虎伍兹主办）",k:'golf',d:'2026-12-03',e:'2026-12-06',p:"男子 · 巴哈马 Albany；20 人邀请赛，世界第一 Scheffler、卫冕冠军松山英树参赛",u:"https://heroworldchallenge.com/"},
+  {n:"球员锦标赛（The Players）",k:'golf',d:'2027-03-11',e:'2027-03-14',p:"男子 · TPC Sawgrass，佛州",u:"https://www.theplayers.com/"},
+  {n:"美国大师赛（The Masters）",k:'golf',d:'2027-04-08',e:'2027-04-11',p:"男子大满贯 · 奥古斯塔，离奥本约 3 小时车程",u:"https://www.masters.com/"},
+  {n:"RBC Heritage",k:'golf',d:'2027-04-15',e:'2027-04-18',p:"男子 · 南卡 Hilton Head 的 Harbour Town"},
+  {n:"雪佛龙锦标赛（Chevron Championship）",k:'golf',d:'2027-04-22',e:'2027-04-25',p:"女子大满贯 · 休斯顿 Memorial Park"},
+  {n:"苏黎世精英赛（Zurich Classic）",k:'golf',d:'2027-04-22',e:'2027-04-25',p:"男子双人赛 · 新奥尔良 TPC Louisiana"},
+  {n:"Valspar Championship",k:'golf',d:'2027-05-06',e:'2027-05-09',p:"男子 · 佛州 Innisbrook"},
+  {n:"Truist Championship",k:'golf',d:'2027-05-13',e:'2027-05-16',p:"男子 · 北卡夏洛特 Quail Hollow"},
+  {n:"PGA 锦标赛",k:'golf',d:'2027-05-20',e:'2027-05-23',p:"男子大满贯 · 得州 Frisco 的 PGA Frisco"},
+  {n:"美国女子公开赛（U.S. Women's Open）",k:'golf',d:'2027-06-03',e:'2027-06-06',p:"女子大满贯 · 俄亥俄州 Toledo 的 Inverness"},
+  {n:"纪念高尔夫赛（Memorial Tournament）",k:'golf',d:'2027-06-03',e:'2027-06-06',p:"男子 · 俄亥俄州 Muirfield Village，尼克劳斯主办"},
+  {n:"美国公开赛（U.S. Open）",k:'golf',d:'2027-06-18',e:'2027-06-21',p:"男子大满贯 · 加州圆石滩",u:"https://www.usopen.com/"},
+  {n:"KPMG 女子 PGA 锦标赛",k:'golf',d:'2027-06-24',e:'2027-06-27',p:"女子大满贯 · 马里兰州 Congressional"},
+  {n:"埃维昂锦标赛（Evian Championship）",k:'golf',d:'2027-07-08',e:'2027-07-11',p:"女子大满贯 · 法国埃维昂"},
+  {n:"英国公开赛（The Open）",k:'golf',d:'2027-07-15',e:'2027-07-18',p:"男子大满贯 · 苏格兰圣安德鲁斯老球场",u:"https://www.theopen.com/"},
+  {n:"AIG 女子英国公开赛",k:'golf',d:'2027-07-29',e:'2027-08-01',p:"女子大满贯 · 英格兰 Royal St George's"},
+  {n:"FedEx St. Jude 锦标赛（季后赛第 1 站）",k:'golf',d:'2027-08-12',e:'2027-08-15',p:"男子 · 田纳西孟菲斯 TPC Southwind"},
+  {n:"BMW 锦标赛（季后赛第 2 站）",k:'golf',d:'2027-08-19',e:'2027-08-22',p:"男子 · 圣路易斯 Bellerive"},
+  {n:"巡回锦标赛（TOUR Championship）",k:'golf',d:'2027-08-26',e:'2027-08-29',p:"男子 · 亚特兰大 East Lake，离奥本约 2 小时；FedEx 杯总决赛，2027 年后 East Lake 不再固定承办"},
+  {n:"国际皇冠赛（International Crown）",k:'golf',d:'2027-09-09',e:'2027-09-12',p:"女子国家队赛 · 旧金山 Lake Merced"},
+  {n:"莱德杯（Ryder Cup）",k:'golf',d:'2027-09-17',e:'2027-09-19',p:"男子欧美对抗 · 爱尔兰 Adare Manor",u:"https://www.rydercup.com/"},
+  {n:"别克 LPGA 锦标赛（上海）",k:'golf',d:'2027-10-21',e:'2027-10-24',p:"女子 · 上海，中国大陆唯一一站 LPGA"},
+  {n:"CME 集团巡回锦标赛（LPGA 总决赛）",k:'golf',d:'2027-11-18',e:'2027-11-21',p:"女子 · 佛州那不勒斯 Tiburon"},
+  // ---- 北京 ----
+  {n:'春节庙会：地坛、龙潭、厂甸、大观园',k:'bjlocal',d:'2027-02-06',e:'2027-02-10',p:'大年初一到初五；需提前购票'},
+  {n:'春节庙会：地坛、龙潭、厂甸、大观园',k:'bjlocal',d:'2028-01-26',e:'2028-01-30',p:'大年初一到初五；需提前购票'},
+  {n:'北京车展',k:'bjexpo',d:'2028-04-24',e:'2028-05-03',p:'双年展，下一届在 2028 年，具体日期待公布',tbd:true},
+  // ---- 美食节 ----
+  {n:'意大利伊夫雷亚橘子大战',k:'feu',d:'2027-02-07',e:'2027-02-09',p:'狂欢节最后三天（圣灰星期三前），互掷橘子'},
+  {n:'澳大利亚钦奇利亚西瓜节',k:'fap',d:'2027-02-11',e:'2027-02-14',p:'昆士兰；奇数年 2 月举办，西瓜滑雪、吃瓜大赛。2027 年具体日期待公布',tbd:true},
+  {n:'法国芒通柠檬节',u:"https://www.fete-du-citron.com/",k:'feu',d:'2027-02-13',e:'2027-02-28',p:'第 93 届，主题“Douce France”；柠檬柑橘大雕塑、金果花车游行（周日）'},
+  {n:'英国库珀山滚奶酪节',k:'feu',d:'2027-05-31',p:'格洛斯特郡；固定在 5 月最后一个周一（春季银行假日）'},
+  {n:'西班牙番茄大战',k:'feu',d:'2027-08-25',p:'布尼奥尔；固定在 8 月最后一个周三，需提前买票'},
+  {n:'德国慕尼黑啤酒节',u:"https://www.oktoberfest.de/",k:'feu',d:'2027-09-18',e:'2027-10-03',p:'Theresienwiese；9 月中旬后的周六开幕，10 月第一个周日（或 10 月 3 日）闭幕'},
+  {n:'泰国九皇斋节（素食节）',k:'fap',d:'2027-09-29',e:'2027-10-08',p:'普吉最盛大，曼谷唐人街也有；农历九月初一至初九，挂黄旗吃斋'},
+  {n:'意大利伊夫雷亚橘子大战',k:'feu',d:'2028-02-27',e:'2028-02-29',p:'狂欢节最后三天'},
+  {n:'泰国九皇斋节（素食节）',k:'fap',d:'2028-10-18',e:'2028-10-26',p:'农历九月初一至初九'},
+];
+/* Atlanta Hawks 2026-27, remaining regular-season games. Times are US Central (ET minus 1h). */
+const HAWKS=[
+  ['2026-11-18','@','雷霆','晚 7:00'],['2026-11-20','vs','黄蜂','晚 6:00','NBA 杯小组赛日'],['2026-11-22','vs','活塞','下午 2:30'],
+  ['2026-11-27','@','凯尔特人','晚 7:00','NBA 杯小组赛日'],['2026-11-29','@','尼克斯','下午 5:00'],['2026-12-01','@','热火','晚 6:30'],
+  ['2026-12-03','vs','步行者','晚 6:00'],['2026-12-12','@','开拓者','晚 9:00'],['2026-12-14','@','太阳','晚 8:00'],
+  ['2026-12-17','@','掘金','晚 8:00'],['2026-12-19','vs','魔术','晚 6:00'],['2026-12-20','vs','雷霆','晚 6:00'],
+  ['2026-12-23','vs','活塞','晚 6:00'],['2026-12-26','vs','黄蜂','下午 2:30'],['2026-12-27','@','马刺','晚 6:00'],
+  ['2026-12-29','vs','公牛','晚 6:00'],['2026-12-31','vs','雄鹿','下午 2:00'],
+  ['2027-01-02','vs','独行侠','晚 6:30'],['2027-01-04','@','76 人','晚 6:00'],['2027-01-05','@','黄蜂','晚 6:00'],
+  ['2027-01-07','vs','步行者','晚 6:00'],['2027-01-10','vs','马刺','下午 2:00'],['2027-01-11','@','奇才','晚 6:00'],
+  ['2027-01-13','vs','骑士','晚 6:00'],['2027-01-15','vs','勇士','晚 6:00'],['2027-01-18','vs','76 人','下午 1:30','马丁·路德·金纪念日 · NBC'],
+  ['2027-01-20','vs','开拓者','晚 6:00'],['2027-01-22','vs','尼克斯','晚 6:00','ESPN'],['2027-01-23','@','热火','晚 7:00'],
+  ['2027-01-26','@','活塞','晚 6:00'],['2027-01-28','@','尼克斯','晚 6:00','Prime Video'],['2027-01-30','@','雄鹿','晚 7:00'],
+  ['2027-02-01','vs','奇才','晚 6:00'],['2027-02-03','@','步行者','晚 6:00'],['2027-02-05','vs','凯尔特人','晚 6:00'],
+  ['2027-02-07','vs','掘金','下午 2:00'],['2027-02-08','vs','热火','晚 6:00','Peacock'],['2027-02-10','vs','鹈鹕','晚 6:00'],
+  ['2027-02-12','vs','太阳','晚 6:00'],['2027-02-14','vs','国王','中午 12:00'],['2027-02-16','vs','猛龙','晚 7:00','NBC'],
+  ['2027-02-17','@','篮网','晚 6:30'],['2027-02-25','@','公牛','晚 7:00'],['2027-02-26','@','猛龙','晚 6:30'],
+  ['2027-02-28','@','魔术','下午 3:30'],['2027-03-03','vs','公牛','晚 6:00'],['2027-03-04','vs','灰熊','晚 6:30'],
+  ['2027-03-06','@','骑士','下午 4:30','Prime Video'],['2027-03-08','@','灰熊','晚 7:00'],['2027-03-10','@','森林狼','晚 8:30','ESPN'],
+  ['2027-03-11','vs','篮网','晚 7:00'],['2027-03-13','vs','魔术','下午 2:00','Prime Video'],['2027-03-15','@','独行侠','晚 8:30','Peacock'],
+  ['2027-03-17','@','爵士','晚 8:00'],['2027-03-19','@','湖人','晚 9:00'],['2027-03-20','@','快船','晚 9:30'],
+  ['2027-03-22','@','勇士','晚 9:00'],['2027-03-24','@','国王','晚 9:00'],['2027-03-27','vs','爵士','晚 6:00'],
+  ['2027-03-29','vs','森林狼','晚 6:00'],['2027-03-31','vs','快船','晚 6:00'],['2027-04-02','@','猛龙','晚 6:30'],
+  ['2027-04-04','@','76 人','中午 12:00'],['2027-04-06','vs','尼克斯','晚 7:00','NBC'],['2027-04-09','vs','凯尔特人','晚 6:00'],
+  ['2027-04-11','@','骑士','下午 5:00','常规赛收官'],
+];
+HAWKS.forEach(([d,h,o,t,x])=>ONEOFF.push({n:'老鹰 '+h+' '+o,k:'hawks',d,t:t+' CT',p:(h==='@'?'客场':'主场，State Farm Arena')+(x?' · '+x:''),u:'https://www.nba.com/hawks/schedule'}));
+ONEOFF.push({n:'老鹰：NBA 杯周还有 2 场待定',k:'hawks',d:'2026-12-04',e:'2026-12-11',p:'小组赛打完后才定：晋级就打淘汰赛，没晋级就补两场常规赛',tbd:true,u:'https://www.nba.com/hawks/schedule'});
+const ALLYEAR='武汉：琴台音乐节、湖畔公益音乐季、武汉爱乐四季音乐会、长江灯光秀、知音号、湖北省博物馆编钟演奏、武汉科技馆和自然博物馆（带孩子）；荆州：古城墙、荆州博物馆、方特东方神画、早堂面和鱼糕；北京：天安门升旗、故宫和国博特展、国家大剧院演出季、798 艺术区';
+
+const KINDS={fest:'传统节日',local:'武汉·节庆',sport:'武汉·体育',expo:'武汉·展会',music:'武汉·音乐',school:'华农',aufb:'奥本橄榄球',aubb:'奥本男篮',intl:'国际赛事',
+  bjlocal:'北京·赏景',bjsport:'北京·体育',bjexpo:'北京·展会',bjculture:'北京·文化',bjgov:'北京·国家大事',
+  fcn:'美食·中国',fus:'美食·美国',fal:'美食·奥本周边',feu:'美食·欧洲',fap:'美食·亚太',golf:'高尔夫',edu:'孩子·上学',fam:'亲情·礼俗',jzlocal:'荆州·节庆',jzsport:'荆州·体育',au:'奥本·校园',auag:'奥本·农学院',nba:'NBA',bball:'篮球',soccer:'足球',hawks:'老鹰队'};
+const GROUP_OF=k=>k==='fest'?'fest':k==='edu'?'kid':k.startsWith('jz')?'jz':['nba','bball','soccer','hawks'].includes(k)?'ball':k==='fam'?'fam':k==='golf'?'golf':k.startsWith('bj')?'bj':(k[0]==='f'&&k!=='fest')?'food':['aufb','aubb','intl','au','auag'].includes(k)?'sports':'wh';
+const GROUPS=[['fest','传统节日'],['wh','武汉'],['jz','荆州'],['kid','孩子·上学'],['bj','北京'],['food','美食节'],['ball','NBA·篮球·足球'],['sports','奥本大学·赛事'],['golf','高尔夫'],['fam','亲情·礼俗']];
+
+function nextWindow(ev){
+  const y=TODAY.getFullYear();
+  for(const yy of [y-1,y,y+1]){
+    const [sm,sd]=ev.s.split('-').map(Number),[em,ed]=ev.e.split('-').map(Number);
+    let s=mk(yy,sm,sd),e=mk(yy,em,ed); if(e<s) e=mk(yy+1,em,ed);
+    if(TODAY<=e) return {start:s,end:e,live:TODAY>=s};
+  }
+}
+function nextLunar(m,d){
+  if(!LF) return null;
+  const tryDay=dd=>{for(let i=0;i<400;i++){const dt=new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()+i);const l=lunarOf(dt);if(l&&!l.leap&&l.m===m&&l.d===dd)return dt;}return null;};
+  return tryDay(d)||(d===30?tryDay(29):null);
+}
+
+function buildItems(){
+  const items=[];
+  for(const [n,dates] of Object.entries(FEST)){
+    const iso=dates.find(s=>s>=ymd(TODAY)); if(!iso) continue;
+    const [y,m,d]=iso.split('-').map(Number);const dt=mk(y,m,d);
+    items.push({name:n,kind:'fest',start:dt,live:false,label:null,note:FEST_NOTE[n]});
+  }
+  for(const lf of LUNAR_FEST){const dt=nextLunar(lf.m,lf.d);if(dt)items.push({name:lf.n,kind:lf.k||'fest',start:dt,live:false,label:lf.l||null,note:lf.x});}
+  for(const ev of EVENTS){const w=nextWindow(ev);items.push({u:ev.u,name:ev.anniv?ev.n+'（'+(w.start.getFullYear()-ev.anniv)+' 周年）':ev.n,kind:ev.k,start:w.live?TODAY:w.start,realStart:w.start,end:w.end,live:w.live,label:ev.l,note:ev.x});}
+  for(const o of ONEOFF){
+    const [y,m,d]=o.d.split('-').map(Number);const s0=mk(y,m,d);
+    const e0=o.e?(([a,b,c])=>mk(a,b,c))(o.e.split('-').map(Number)):s0;
+    if(e0<TODAY) continue;
+    if(!['hawks','aubb','aufb'].includes(o.k)&&items.some(x=>x.name===o.n)) continue;
+    const live=TODAY>=s0&&o.e;
+    items.push({u:o.u,name:o.n,kind:o.k,start:live?TODAY:s0,realStart:s0,end:e0,live:!!live,label:o.tbd?'日期待定':(o.e?'至 '+(e0.getMonth()+1)+'/'+e0.getDate():null),sub:[o.t,o.p].filter(Boolean).join(' · '),note:o.p});
+  }
+  items.forEach(it=>{it.days=Math.round((it.start-TODAY)/DAY);});
+  items.sort((a,b)=>a.days-b.days||(a.kind==='fest'?-1:1));
+  return items;
+}
+
+/* Rendering */
+let filter='all';try{filter=localStorage.getItem('cal-filter')||'all';}catch(e){}
+if(!['all',...GROUPS.map(g=>g[0])].includes(filter))filter='all';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const daysText=n=>n===0?'今天':n===1?'明天':n+' 天';
+
+function render(){
+  TODAY=todayLocal();
+  const l=lunarOf(TODAY);
+  $('today').innerHTML='今天 <b>'+(TODAY.getMonth()+1)+' 月 '+TODAY.getDate()+' 日 周'+WK[TODAY.getDay()]+'</b>'+(l?' · 农历'+lunarText(l):'');
+  const items=buildItems();
+  const upcoming=items.filter(i=>!i.live);
+  const nx=upcoming[0];
+  if(nx){
+    const others=upcoming.slice(1,4).map(i=>'<span>'+esc(i.name)+' · '+daysText(i.days)+'</span>').join('');
+    const nl=lunarOf(nx.start);
+    $('hero').innerHTML='<div class="seal"><span class="n">'+(nx.days===0?'今':nx.days)+'</span><span class="u">'+(nx.days===0?'天':'天后')+'</span></div>'+
+      '<div><div class="eyebrow">下一个</div><h2>'+esc(nx.name)+'</h2><div class="meta">'+(nx.start.getFullYear())+' 年 '+(nx.start.getMonth()+1)+' 月 '+nx.start.getDate()+' 日 周'+WK[nx.start.getDay()]+(nl?' · 农历'+lunarText(nl):'')+(nx.note?'<br>'+esc(nx.note):'')+'</div>'+
+      (others?'<div class="also">'+others+'</div>':'')+'</div>';
+  }
+  const counts={all:items.length};items.forEach(i=>{const g=GROUP_OF(i.kind);counts[g]=(counts[g]||0)+1;});
+  $('filters').innerHTML=[['all','全部'],...GROUPS].map(([k,v])=>'<button class="chip" type="button" data-k="'+k+'" aria-pressed="'+(filter===k)+'">'+v+'<span class="c">'+(counts[k]||0)+'</span></button>').join('');
+  $('allyear').innerHTML='<b>全年都有</b>'+ALLYEAR;
+  $('allyear').hidden=!(filter==='all'||filter==='wh'||filter==='jz'||filter==='bj');
+  const shown=items.filter(i=>filter==='all'||GROUP_OF(i.kind)===filter);
+  const groups=new Map();
+  for(const it of shown){const key=it.live?'live':it.start.getFullYear()+'-'+pad(it.start.getMonth()+1);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(it);}
+  let html='';
+  for(const [key,list] of groups){
+    const head=key==='live'?'正在进行':(+key.slice(0,4))+' 年 '+(+key.slice(5))+' 月';
+    html+='<div class="month"><h3>'+head+'<small>'+list.length+' 项</small></h3>';
+    for(const it of list){
+      const d=it.live?it.realStart:it.start;const lu=it.kind==='fest'?lunarOf(it.start):null;
+      const dateTop=it.live?'进行中':(d.getMonth()+1)+'/'+d.getDate();
+      const dateSub=it.live?('至 '+(it.end.getMonth()+1)+'/'+it.end.getDate()):(it.label?it.label:'周'+WK[d.getDay()]);
+      const soon=!it.live&&it.days<=7;
+      const isCn=['fcn','fest','school','edu','fam'].includes(it.kind)||it.kind.startsWith('jz')||it.kind.startsWith('bj')||GROUP_OF(it.kind)==='wh';
+      const href=it.u||((isCn?'https://www.baidu.com/s?wd=':'https://www.google.com/search?q=')+encodeURIComponent(it.name.replace(/（.*?）/g,' ')+' '+d.getFullYear()));
+      html+='<div tabindex="0" role="button" class="row'+(soon?' soon':'')+(it.kind==='fest'?' fest':'')+'" aria-expanded="false">'+
+        '<div class="d"><b>'+dateTop+'</b><span>'+esc(dateSub)+'</span></div>'+
+        '<div class="t"><div class="name"><a class="go" href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(it.name)+'<span class="arr">'+(it.u?'官网 ↗':'搜索 ↗')+'</span></a><span class="tag k-'+it.kind+'">'+KINDS[it.kind]+'</span>'+(it.live?'<span class="live">进行中</span>':'')+'</div>'+
+        '<div class="sub">'+esc([lu?'农历'+lunarText(lu):'',it.sub].filter(Boolean).join(' · '))+'</div>'+
+        '<div class="more" hidden>'+(esc(it.note)||'暂无备注')+'</div></div>'+
+        '<div class="left">'+(it.live?'<b>●</b><span>正在</span>':'<b>'+(it.days===0?'今天':it.days)+'</b><span>'+(it.days===0?'':it.days===1?'明天':'天后')+'</span>')+'</div></div>';
+    }
+    html+='</div>';
+  }
+  $('timeline').innerHTML=html||'<div class="empty">这个类别暂时没有活动。</div>';
+}
+$('filters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.k;try{localStorage.setItem('cal-filter',filter);}catch(e){}render();});
+$('timeline').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('row')){e.preventDefault();e.target.click();}});
+$('timeline').addEventListener('click',e=>{if(e.target.closest('a'))return;const r=e.target.closest('.row');if(!r)return;const m=r.querySelector('.more');m.hidden=!m.hidden;r.setAttribute('aria-expanded',String(!m.hidden));});
+
+render();
+setInterval(()=>{if(ymd(todayLocal())!==ymd(TODAY))render();},60000);
+})();
+</script>
+</body>
+</html>
