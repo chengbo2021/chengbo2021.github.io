@@ -31,6 +31,7 @@ h1{font-family:var(--serif);font-weight:900;font-size:clamp(28px,6vw,40px);margi
 .today{color:var(--muted);font-size:14px}
 .today b{color:var(--ink);font-weight:500}
 a.doc{color:var(--red);font-size:14px;text-decoration:none;border-bottom:1px solid currentColor}
+.topnav{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 a.doc:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 
 /* Hero: the next date as a big seal */
@@ -120,10 +121,10 @@ a.go .arr{font-size:11px;font-weight:500;color:var(--red);margin-left:6px;white-
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>活动日历</h1>
+      <h1 id="h1">活动日历</h1>
       <div class="today" id="today"></div>
     </div>
-    <a class="doc" href="./">← 返回主页 Bo Cheng</a>
+    <div class="topnav"><button class="chip" id="langBtn" type="button">EN</button><a class="doc" id="back" href="./">← 返回主页 Bo Cheng</a></div>
   </header>
 
   <div class="hero" id="hero" aria-live="polite"></div>
@@ -132,8 +133,8 @@ a.go .arr{font-size:11px;font-weight:500;color:var(--red);margin-left:6px;white-
   <div class="allyear" id="allyear"></div>
   <div id="timeline" style="display:flex;flex-direction:column;gap:22px"></div>
 
-  <p class="note">点活动名字打开网站：“官网”直达官方网站，“搜索”打开搜索结果（中国的活动用百度）。点其他地方展开说明。</p>
-  <p class="note">日期按距今天数自动排序。标了“约”“日期待定”或“以官宣为准”的是按往年估计的，出行前请以主办方公布为准。内容整理于 2026 年 11 月。</p>
+  <p class="note" id="n1"></p>
+  <p class="note" id="n2"></p>
 </div>
 
 <script>
@@ -357,6 +358,317 @@ const EVENTS=[
   {n:"阿尔巴白松露节",u:"https://www.fieradeltartufo.org/",k:'feu',s:'10-10',e:'12-06',l:"10 月中–12 月初",x:"意大利皮埃蒙特；周末松露市集，11 月有世界白松露拍卖"},
 ];
 
+/* English names and notes, keyed by the Chinese event name */
+const EN={
+  // ---- Traditional festivals ----
+  "冬至":["Winter Solstice (Dongzhi)","Wuhan: families start curing sausages, fish and pork for the New Year, and many visit ancestral graves. Beijing: dumplings on the solstice."],
+  "腊八":["Laba Festival","Wuhan: Guiyuan Temple hands out Laba porridge from early morning. Beijing: Yonghe and Guanghua temples serve porridge; households pickle Laba garlic."],
+  "除夕":["Chinese New Year's Eve","Wuhan: reunion dinner with pork-rib and lotus-root soup, pearl meatballs and whole fish. Beijing: dumplings, the Spring Festival Gala, staying up past midnight."],
+  "春节":["Chinese New Year (Spring Festival)","Wuhan: counting arhats at Guiyuan Temple, New Year events at Yellow Crane Tower. Beijing: temple fairs at Ditan, Longtan and Changdian. Public holiday Feb 5–13 (2027)."],
+  "元宵":["Lantern Festival","Wuhan: lantern shows and tangyuan. Beijing: rolled yuanxiao and lantern fairs."],
+  "清明":["Qingming (Tomb-Sweeping Day)","Wuhan: tomb-sweeping and spring outings at East Lake and Mulan Mountain; roads to Shimenfeng, Jiufengshan, Biandanshan and Longquanshan cemeteries are jammed, so go a week or two early. Beijing: outings to Fragrant Hills and the Botanical Garden. Holiday Apr 3–5 (2027)."],
+  "端午":["Dragon Boat Festival","Wuhan: dragon boats and zongzi; Qu Yuan's hometown is Zigui, Yichang. Jingzhou: races on the old-city moat and in every county. Beijing: jujube zongzi, races on the Grand Canal in Tongzhou."],
+  "七夕":["Qixi Festival","Wuhan: the Guqin Terrace and its story of kindred spirits. Beijing: evening walks at Shichahai and Beihai."],
+  "中秋":["Mid-Autumn Festival","Wuhan: moon-viewing on the river beach and at Yellow Crane Tower. Beijing: mooncakes and the Lord Rabbit figurine; moon-viewing at the Summer Palace. National Day holiday (Oct 1–7) follows."],
+  "重阳":["Double Ninth Festival","A day for climbing hills and honouring elders. Wuhan: Turtle, Snake and Mulan hills. Beijing: Fragrant Hills and the Great Wall."],
+  "归元寺初五迎财神":["Welcoming the God of Wealth at Guiyuan Temple","On the 5th day of the lunar new year Wuhan crowds Guiyuan Temple to burn incense and count arhats. Expect traffic controls."],
+  "二月二 龙抬头":["Dragon Raises Its Head (Lunar 2/2)","The traditional day for a haircut, especially for children."],
+  "三月三":["Double Third (Lunar 3/3)","Wuhan custom: eggs boiled with shepherd's purse."],
+  "中元节（七月半）":["Ghost Festival (Zhongyuan)","Wuhan families burn paper packets addressed to departed relatives, usually in the days before lunar 7/15."],
+  "寒衣节":["Winter Clothes Festival","Lunar 10/1: paper winter clothes are burned for ancestors. With Qingming and Zhongyuan, one of three days for remembering the dead."],
+  "小年（腊月二十四）":["Little New Year (Lunar 12/24)","Wuhan and most of Hubei mark it on the 24th (the north on the 23rd): house-cleaning and New Year shopping begin."],
+  // ---- Wuhan ----
+  "东湖梅花节":["East Lake Plum Blossom Festival","East Lake Plum Garden, one of China's four great plum gardens."],
+  "武汉大学、东湖樱花节":["Cherry blossoms at Wuhan University and East Lake","Wuhan University requires online booking during the bloom."],
+  "中超：武汉三镇主场":["Chinese Super League: Wuhan Three Towns home games","Fixtures as published by the club."],
+  "草莓音乐节（春季）":["Strawberry Music Festival (spring)","Exact dates as announced."],
+  "武汉马拉松（汉马）":["Wuhan Marathon","Entry is usually by lottery early in the year."],
+  "世界大健康博览会":["World Health Expo","Medical, pharmaceutical and health industries."],
+  "武汉种子交易会":["Wuhan Seed Trade Fair","Seed-industry trade show."],
+  "楚超（湖北省城市足球联赛）":["Chu Super League (Hubei city football league)","Wuhan home games draw lively crowds."],
+  "光博会":["Optics Valley Optoelectronics Expo","International optoelectronics expo in Optics Valley."],
+  "华中国际车展":["Central China International Auto Show","The spring auto show."],
+  "汽水音乐节":["Qishui Music Festival",""],
+  "武汉国际渡江节":["Wuhan Yangtze River Crossing Festival","Mass swim across the Yangtze, commemorating Mao Zedong's 1966 swim."],
+  "中部（武汉）糖酒食品交易会":["Central China (Wuhan) Food & Drinks Fair","Food and beverage trade fair."],
+  "城市音乐新秀场":["City New Music Showcase",""],
+  "武汉网球公开赛（武网）":["Wuhan Open (tennis)","WTA 1000, the last 1000-level event of the women's season."],
+  "草莓音乐节（秋季）":["Strawberry Music Festival (autumn)","Exact dates as announced."],
+  "武汉马运会暨中国·武汉赛马节":["Wuhan Equestrian Games & Horse Racing Festival","Wuhan Business University equestrian park (Hannan): show jumping, dressage, vaulting, mounted archery and flat racing, plus a family carnival. Nov 14 in 2026; dates change yearly."],
+  "世界市长对话·武汉（国际友好城市合作大会）":["World Mayors Dialogue · Wuhan","Held Sep 19, 2026, with mayors from sister cities such as Yangon, Manchester, Cape Town and Daegu. Not confirmed as annual."],
+  "中非创新合作与发展论坛":["China-Africa Innovation Cooperation and Development Forum","Nov 10–13, 2026: about 800 delegates from 40 African countries. Not confirmed as annual in Wuhan."],
+  "全球治理·东湖论坛":["Global Governance East Lake Forum","11th edition in 2025, on governance innovation in the Global South. Dates as announced."],
+  "全国楚商高尔夫联赛":["National Chu Merchants Golf League","Golf league for Hubei-born entrepreneurs, run yearly since about 2016 with regional qualifiers and a final. Venue and dates vary."],
+  "光谷马拉松":["Optics Valley Marathon","Nov 15, 2026: start at HUST south gate, full marathon finishes at Future Science City. Later years as announced."],
+  "华农“异曲同工”毕业巡游":["HZAU graduation parade of farm machines","June 13, 2026 at 7 pm: 16 modern farm machines dressed as floats, followed by 16 college contingents, with university leaders waving the flag from a combine harvester."],
+  "华农毕业典礼、健康毕业餐":["HZAU commencement and graduation meal","The June 14, 2026 graduation meal was made from the colleges' own research: crayfish, boneless grass carp, black pork, black rice and late navel oranges. Also a glow run and lawn concert."],
+  "华农迎新日":["HZAU freshman move-in day","The class of 2026 arrived Aug 31, with 131 welcome events. Later years per university notice."],
+  "华中农业大学校庆日":["Huazhong Agricultural University Founders' Day","Founded in 1898 as the Hubei Farming School by Zhang Zhidong."],
+  "武汉国际车展":["Wuhan International Auto Show","Dongfeng's home show, with nearly 140 brands."],
+  "东湖、园博园新春灯会":["New Year lantern shows at East Lake and Garden Expo Park","Venue and dates change yearly; East Lake, Garden Expo Park and Yellow Crane Tower are common hosts."],
+  "武汉植物园郁金香展":["Tulip show at Wuhan Botanical Garden","Chinese Academy of Sciences garden at the foot of Moshan; bloom depends on the weather."],
+  "黄陂云雾山杜鹃花节":["Azalea Festival at Yunwu Mountain, Huangpi","Hillsides of wild azaleas about 1.5 hours from the city."],
+  "武汉小龙虾季":["Wuhan crayfish season","Braised and steamed crayfish; Wansongyuan and Xuesong Road are the centre of it."],
+  "东湖荷花节":["East Lake Lotus Festival","East Lake Lotus Garden has a large collection of varieties; best in the early morning."],
+  "武汉金秋菊展":["Wuhan Autumn Chrysanthemum Show","Shown in several parks at once, including Jiefang and Zhongshan parks; the main venue changes yearly."],
+  "汉口江滩芦花、东湖水杉红叶":["Reeds on Hankou riverbank, red metasequoias at East Lake","The riverbank reeds peak in November; East Lake's metasequoias turn red from late November."],
+  "洪山菜薹、排骨藕汤季":["Hongshan purple cabbage shoots and lotus-root soup season","Hongshan caitai is sweetest after frost; winter is the season for pork-rib and lotus-root soup."],
+  "江汉关跨年钟声":["New Year's Eve bells at Jianghan Customs House","Countdown on Jianghan Road; very crowded, often with traffic controls."],
+  "武汉茶博会":["Wuhan Tea Expo","Sep 11–14 in 2026 at Wuhan International Convention and Exhibition Center."],
+  "中国机博会暨武汉工博会":["China Machinery & Electronics Fair / Wuhan Industrial Fair","Sep 22–24 in 2026 at Wuhan International Expo Center (Hanyang)."],
+  // ---- Auburn ----
+  "奥本 Mardi Gras 游行":["Auburn Mardi Gras Parade","Downtown Auburn parade and Krewe Krawl. Date as announced."],
+  "A-Day 春季橄榄球赛":["A-Day spring football game","Jordan-Hare Stadium, with Tiger Walk and the marching band. Date as announced."],
+  "Tiger Giving Day（奥本捐赠日）":["Tiger Giving Day","Auburn's 24-hour online fundraiser; Sep 10 in 2025 (10th year). Date as announced."],
+  "Auburn Oktoberfest":["Auburn Oktoberfest","Beer festival at Ag Heritage Park. Date as announced."],
+  "Hey Day（奥本打招呼日）":["Hey Day","An Auburn tradition since 1947: everyone wears a name tag and says hey. Oct 16 in 2024, Oct 15 in 2025."],
+  "Syrup Sopping Day（Loachapoka）":["Syrup Sopping Day (Loachapoka)","About 10,000 visitors at Pioneer Park in Loachapoka, next to Auburn, reliving late-1800s rural life. Date as announced."],
+  "奥本市中心圣诞游行":["Downtown Auburn Christmas Parade","Date as announced."],
+  // ---- Jingzhou ----
+  "荆州古城新春游园、灯会":["New Year fair and lanterns in Jingzhou Old City","Around the city wall and the east gate, with a gate-opening ceremony and night tours."],
+  "荆州马拉松":["Jingzhou Marathon","Mar 29 in 2026: from the Culture and Sports Center past the city wall, Fenghuang Bridge and Garden Expo Park."],
+  "楚超：荆州主场":["Chu Super League: Jingzhou home games","Hubei city football league; home ground is Jingzhou Olympic Sports Center."],
+  "监利小龙虾季":["Jianli crayfish season","Jianli is one of China's biggest crayfish-farming counties. Festival events as announced locally."],
+  "洪湖赏荷季":["Honghu Lake lotus season","Around Lantian eco-park, at its best in July; boats go into the lotus beds."],
+  "公安葡萄采摘季":["Gong'an grape-picking season","Vineyards around Buhe in Gong'an County, just across the river from Jingzhou."],
+  "楚文化节（荆州）":["Chu Culture Festival (Jingzhou)","The 2nd edition opened Sep 20, 2025 in the old city with 20-plus shows, exhibitions and heritage events. Dates as announced."],
+  "洪湖清水蟹上市":["Honghu hairy crab season","Honghu clear-water crabs are fattest from Mid-Autumn to early winter."],
+  // ---- School calendar (Wuhan) ----
+  "武汉中小学、幼儿园放寒假":["Wuhan schools: winter break begins","Estimated date. In 2026 it was Jan 31 (primary, middle, kindergarten) and Feb 7 (high school). Follows the city education bureau calendar."],
+  "武汉中小学、幼儿园春季开学":["Wuhan schools: spring term begins","Estimated date. In 2026 it was Mar 4, the day after the Lantern Festival."],
+  "楚才作文竞赛":["Chucai Writing Competition","A Wuhan essay contest for school students, running for decades. Dates as announced."],
+  "武汉中考志愿填报":["Wuhan high-school entrance exam: choosing schools","May 8–11 in 2026, submitted online before the exam."],
+  "武汉小学、幼儿园新生报名登记":["Wuhan primary school and kindergarten enrolment","Timing varies by district."],
+  "六一儿童节":["Children's Day (June 1)","In 2026 eight Wuhan districts gave under-14s the day off; the zoo, Yellow Crane Tower and Garden Expo Park were free for children."],
+  "高考（湖北）":["Gaokao, national college entrance exam (Hubei)","Traffic controls and no honking around exam sites."],
+  "武汉小学毕业考试":["Wuhan primary school leaving exam","June 13 in 2026."],
+  "大学毕业典礼季":["University graduation season in Wuhan","Commencements at Wuhan University, HUST, HZAU and others; dates per university."],
+  "武汉中考":["Wuhan high-school entrance exam (Zhongkao)","106,000 candidates in 2026, over three days."],
+  "湖北高考出分":["Hubei Gaokao results","Applications open a few days after results."],
+  "武汉中考出分、划线":["Wuhan Zhongkao results and cut-off scores","Per the city admissions office."],
+  "武汉中小学、幼儿园放暑假":["Wuhan schools: summer break begins","July 4 in 2026, after finals on June 30 – July 2."],
+  "大学新生报到":["University freshman arrival","Wuhan has over a million university students; stations and the metro are packed."],
+  "武汉中小学、幼儿园秋季开学":["Wuhan schools: autumn term begins","New first-graders and seventh-graders usually report a few days earlier."],
+  "教师节":["Teachers' Day (China)",""],
+  "全国硕士研究生考试":["National postgraduate entrance exam","Per Ministry of Education notice."],
+  "清明祭扫高峰（武汉各陵园）":["Qingming tomb-sweeping peak (Wuhan cemeteries)","Heavy traffic around the main cemeteries; some years require booking on peak days."],
+  // ---- Beijing ----
+  "冰雪季：什刹海、颐和园、北海冰场":["Ice season: Shichahai, Summer Palace and Beihai rinks","Ice sledges, slides and skating; opening depends on the freeze."],
+  "全国两会":["National Two Sessions","The National People's Congress opens Mar 5; tight security around Tiananmen."],
+  "中关村论坛":["Zhongguancun Forum","Science and technology innovation forum."],
+  "玉渊潭樱花节":["Yuyuantan Cherry Blossom Festival","Beijing's largest cherry garden; bloom depends on the weather."],
+  "北京半程马拉松":["Beijing Half Marathon","Apr 12 in 2026: Tiananmen Square to the Olympic Park, about 22,000 runners."],
+  "北京国际电影节":["Beijing International Film Festival","Screenings and the Tiantan Awards. Dates as announced."],
+  "中超：北京国安主场":["Chinese Super League: Beijing Guoan home games","At the new Workers' Stadium."],
+  "CBA：北京首钢、北控主场":["CBA: Beijing Ducks and Beijing Royal Fighters home games","Ducks at Wukesong; Royal Fighters at Cadillac Arena."],
+  "草莓音乐节（北京）":["Strawberry Music Festival (Beijing)","Dates as announced."],
+  "北京国际图书博览会（图博会）":["Beijing International Book Fair","China National Convention Center. Dates as announced."],
+  "世界机器人大会":["World Robot Conference","Yizhuang. Dates as announced."],
+  "中国国际服务贸易交易会（服贸会）":["China International Fair for Trade in Services (CIFTIS)","Sep 9–13 in 2026 at Shougang Park; the last two days are public days."],
+  "北京国际设计周":["Beijing Design Week","Venues at Dashilar, 798 and Shougang Park."],
+  "怀柔长城马拉松":["Huairou Great Wall Marathon","Sep 27 in 2026, around the Mutianyu Great Wall."],
+  "中国网球公开赛（中网）":["China Open (tennis)","2026: starts Sep 28, men's final Oct 6, women's final Oct 11."],
+  "国庆：天安门花坛、升旗":["National Day: Tiananmen flower displays and flag-raising","Flag-raising requires online booking."],
+  "北京国际音乐节":["Beijing Music Festival","Classical music and opera. Dates as announced."],
+  "北京马拉松":["Beijing Marathon","Oct 18 in 2026: Tiananmen to the Olympic Park."],
+  "香山红叶节":["Fragrant Hills Red Leaves Festival","Colour peaks from late October to early November; weekends are very crowded."],
+  "银杏季：钓鱼台、地坛、三里河":["Ginkgo season: Diaoyutai, Ditan and Sanlihe","The ginkgo avenue outside Diaoyutai State Guesthouse is the best known."],
+  // ---- Food festivals: China ----
+  "海南国际椰子节":["Hainan International Coconut Festival","Coconut chicken, coconut rice and float parades across Hainan."],
+  "西湖龙井开茶节":["West Lake Longjing Tea Opening Festival","Hangzhou: picking and pan-firing the first spring tea."],
+  "大兴西瓜节":["Daxing Watermelon Festival","Panggezhuang, Beijing: tastings and a watermelon contest."],
+  "潜江龙虾节":["Qianjiang Crayfish Festival","Hubei, about 2 hours from Wuhan: home of braised crayfish, with a 10,000-seat crayfish banquet."],
+  "合肥龙虾节":["Hefei Crayfish Festival","Anhui: thirteen-spice, garlic and chilled crayfish."],
+  "盱眙国际龙虾节":["Xuyi International Crayfish Festival","Jiangsu: thirteen-spice crayfish and a mass banquet."],
+  "余姚、仙居杨梅节":["Yuyao and Xianju Bayberry Festival","Zhejiang: bayberry picking."],
+  "增城、从化荔枝节":["Zengcheng and Conghua Lychee Festival","Guangzhou: famous lychee varieties."],
+  "哈尔滨国际啤酒节":["Harbin International Beer Festival","Cold Harbin beer, red sausage and Russian-style barbecue."],
+  "大连国际啤酒节":["Dalian International Beer Festival","Beer with seafood near Xinghai Square."],
+  "新疆哈密瓜节":["Hami Melon Festival","Hami, Xinjiang: melon tastings and farmers' market."],
+  "楚雄野生菌美食文化节":["Chuxiong Wild Mushroom Festival","Yunnan: matsutake, termite mushrooms and mushroom hotpot."],
+  "那达慕大会":["Naadam","Inner Mongolia: hand-held mutton, whole roast lamb, milk tea, wrestling and horse racing."],
+  "青岛国际啤酒节":["Qingdao International Beer Festival","Asia's largest beer festival, at Golden Beach Beer City."],
+  "拉萨雪顿节":["Shoton (Yogurt) Festival, Lhasa","Yogurt, the giant thangka unveiling and Tibetan opera."],
+  "南海开渔节":["South China Sea fishing season opens","The summer fishing ban ends in Guangdong, Guangxi and Hainan; fresh catch returns."],
+  "吐鲁番葡萄节":["Turpan Grape Festival","Grape Valley, Xinjiang: tastings and raisin-drying houses."],
+  "淮南豆腐文化节":["Huainan Tofu Culture Festival","Anhui, said to be the birthplace of tofu."],
+  "东海开渔节（象山、舟山）":["East China Sea fishing season opens (Xiangshan, Zhoushan)","A thousand boats set out; first-net seafood banquets."],
+  "阳澄湖大闸蟹开湖节":["Yangcheng Lake hairy crab season opens","Suzhou: the best crab-eating runs to November."],
+  "梁子湖螃蟹节":["Liangzi Lake Crab Festival","Ezhou and Jiangxia, near Wuhan: the crab harvest opens."],
+  "中国（贵州）国际酒类博览会":["China (Guizhou) International Alcoholic Beverages Expo","Guiyang: Moutai and other baijiu."],
+  "洛川、烟台苹果节":["Luochuan and Yantai Apple Festivals","Shaanxi and Shandong: apple picking and trade fairs."],
+  "中国（成都）国际美食节":["Chengdu International Food Festival","Sichuan cuisine, hotpot and street snacks; dates vary."],
+  "柳州螺蛳粉美食文化节":["Liuzhou Luosifen (river-snail noodle) Festival","Guangxi: noodle contests and night markets."],
+  "阿克苏苹果节":["Aksu Apple Festival","Xinjiang: the sugar-core apple."],
+  // ---- Food festivals: US and world ----
+  "佛罗里达草莓节（Florida Strawberry Festival）":["Florida Strawberry Festival","Plant City, Florida: strawberry shortcake, milkshakes and concerts."],
+  "南海滩美酒美食节（SOBEWFF）":["South Beach Wine & Food Festival","Miami Beach: celebrity-chef tastings, one of the largest in the US."],
+  "维达利亚洋葱节（Vidalia Onion Festival）":["Vidalia Onion Festival","Vidalia, Georgia, home of the sweet onion."],
+  "佛蒙特枫糖节（Vermont Maple Festival）":["Vermont Maple Festival","St. Albans: maple syrup and sugar on snow."],
+  "世界鲶鱼节（World Catfish Festival）":["World Catfish Festival","Belzoni, Mississippi: fried catfish and an eating contest."],
+  "布罗布里奇小龙虾节（Breaux Bridge Crawfish Festival）":["Breaux Bridge Crawfish Festival","Louisiana, the crawfish capital of the world: Cajun music and boiled crawfish."],
+  "孟菲斯五月烧烤大赛（Memphis in May BBQ）":["Memphis in May World Championship Barbecue","Memphis, Tennessee: pork barbecue."],
+  "国际饼干节（International Biscuit Festival）":["International Biscuit Festival","Knoxville, Tennessee: Southern breakfast biscuits."],
+  "科迪亚克帝王蟹节（Kodiak Crab Festival）":["Kodiak Crab Festival","Kodiak, Alaska: king crab."],
+  "泥虫狂欢节（Mudbug Madness）":["Mudbug Madness","Shreveport, Louisiana: crawfish and Cajun food."],
+  "卡斯特罗维尔洋蓟节（Artichoke Festival）":["Castroville Artichoke Festival","Castroville, California: fried artichokes."],
+  "佐治亚桃子节（Georgia Peach Festival）":["Georgia Peach Festival","Fort Valley and Byron: billed as the world's largest peach cobbler."],
+  "阿斯彭美食美酒经典（Food & Wine Classic）":["Food & Wine Classic in Aspen","Aspen, Colorado."],
+  "全国樱桃节（National Cherry Festival）":["National Cherry Festival","Traverse City, Michigan: cherry pie and pit-spitting."],
+  "基韦斯特青柠节（Key Lime Festival）":["Key Lime Festival","Key West, Florida: key lime pie."],
+  "吉尔罗伊大蒜节（Gilroy Garlic Festival）":["Gilroy Garlic Festival","California; returned on a smaller scale in 2025 after years off."],
+  "缅因龙虾节（Maine Lobster Festival）":["Maine Lobster Festival","Rockland, Maine: lobster dinners and a parade."],
+  "爱荷华州博览会（Iowa State Fair）":["Iowa State Fair","Des Moines: the butter cow and food on a stick."],
+  "哈奇辣椒节（Hatch Chile Festival）":["Hatch Chile Festival","Hatch, New Mexico: roasted green chile."],
+  "花生煮节（Peanut Boil Festival）":["Peanut Boil Festival","Luverne, Alabama, about 1.5 hours from Auburn: boiled peanuts."],
+  "世界炸鸡节（World Chicken Festival）":["World Chicken Festival","London, Kentucky, where Colonel Sanders started out."],
+  "亚特兰大美食美酒节（Atlanta Food & Wine）":["Atlanta Food & Wine Festival","Southern cooking and chefs, about 1.5 hours from Auburn."],
+  "芝加哥美食节（Taste of Chicago）":["Taste of Chicago","Grant Park: deep-dish pizza and Chicago hot dogs, free entry."],
+  "得州州博会（State Fair of Texas）":["State Fair of Texas","Fair Park, Dallas: famous for fried everything."],
+  "美国皇家烧烤世界系列赛（American Royal BBQ）":["American Royal World Series of Barbecue","Kansas City: one of the largest barbecue contests."],
+  "全国虾节（National Shrimp Festival）":["National Shrimp Festival","Gulf Shores, Alabama, about 4 hours from Auburn."],
+  "瑟克尔维尔南瓜节（Circleville Pumpkin Show）":["Circleville Pumpkin Show","Ohio: giant pumpkin pies and weigh-offs."],
+  "香肠节（Wurstfest）":["Wurstfest","New Braunfels, Texas: German sausage and beer."],
+  "科纳咖啡节（Kona Coffee Cultural Festival）":["Kona Coffee Cultural Festival","Kona, Hawaii: farm tours and cupping contests."],
+  "全国花生节（National Peanut Festival）":["National Peanut Festival","Dothan, Alabama, about 2 hours from Auburn: parade and farm show."],
+  "阿尔巴白松露节":["Alba White Truffle Fair","Piedmont, Italy: weekend truffle markets and the November auction."],
+  "意大利伊夫雷亚橘子大战":["Battle of the Oranges, Ivrea","The last three days of Carnival in Ivrea, Italy."],
+  "澳大利亚钦奇利亚西瓜节":["Chinchilla Melon Festival","Queensland, Australia, in odd-numbered years: melon skiing and eating contests."],
+  "法国芒通柠檬节":["Menton Lemon Festival","France: citrus sculptures and Sunday float parades."],
+  "英国库珀山滚奶酪节":["Cooper's Hill Cheese-Rolling","Gloucestershire, England: the last Monday in May."],
+  "西班牙番茄大战":["La Tomatina","Buñol, Spain: the last Wednesday in August; tickets required."],
+  "德国慕尼黑啤酒节":["Oktoberfest, Munich","Theresienwiese, from mid-September to early October."],
+  "泰国九皇斋节（素食节）":["Nine Emperor Gods (Vegetarian) Festival, Thailand","Biggest in Phuket; lunar 9/1 to 9/9."],
+  // ---- Auburn sports ----
+  "奥本橄榄球 vs 桑福德":["Auburn football vs Samford","Home, Jordan-Hare Stadium"],
+  "Iron Bowl：奥本橄榄球 @ 阿拉巴马":["Iron Bowl: Auburn football at Alabama","Away, Tuscaloosa; regular-season finale"],
+  "奥本男篮 vs 堪萨斯 / UNLV":["Auburn basketball vs Kansas / UNLV","Players Era 8, Las Vegas"],
+  "奥本男篮：Players Era 第三场":["Auburn basketball: Players Era game 3","Players Era 8, Las Vegas"],
+  "奥本男篮 vs 利普斯科姆":["Auburn basketball vs Lipscomb","Home"],
+  "奥本男篮 @ 克莱姆森":["Auburn basketball at Clemson","SEC/ACC Challenge, away"],
+  "奥本男篮 vs 东肯塔基":["Auburn basketball vs Eastern Kentucky","Home"],
+  "奥本男篮 vs 阿拉巴马州立":["Auburn basketball vs Alabama State","Home"],
+  "奥本男篮 vs 中田纳西":["Auburn basketball vs Middle Tennessee","Rocket City Classic, Huntsville"],
+  "奥本男篮 vs 威斯康星":["Auburn basketball vs Wisconsin","Neutral site, Bridgestone Arena, Nashville"],
+  "奥本男篮 vs 理海":["Auburn basketball vs Lehigh","Home"],
+  "奥本男篮 vs 摩根州立":["Auburn basketball vs Morgan State","Home"],
+  "奥本男篮 @ 德州农工":["Auburn basketball at Texas A&M","SEC away · SEC Network"],
+  "奥本男篮 vs 田纳西":["Auburn basketball vs Tennessee","SEC home · ESPN2/ESPNU"],
+  "奥本男篮 vs 佐治亚":["Auburn basketball vs Georgia","SEC home · SEC Network"],
+  "奥本男篮 @ 德克萨斯":["Auburn basketball at Texas","SEC away · ESPN/ESPN2"],
+  "奥本男篮 vs 密西西比大学":["Auburn basketball vs Ole Miss","SEC home · SEC Network"],
+  "奥本男篮 @ 范德堡":["Auburn basketball at Vanderbilt","SEC away · SEC Network"],
+  "奥本男篮 @ LSU":["Auburn basketball at LSU","SEC away · SEC Network"],
+  "奥本男篮 vs 密西西比州立":["Auburn basketball vs Mississippi State","SEC home · SEC Network"],
+  "奥本男篮 @ 阿拉巴马":["Auburn basketball at Alabama","SEC away · ESPN2"],
+  "奥本男篮 vs 俄克拉荷马":["Auburn basketball vs Oklahoma","SEC home · SEC Network"],
+  "奥本男篮 vs 佛罗里达":["Auburn basketball vs Florida","SEC home · ESPN2"],
+  "奥本男篮 @ 南卡罗来纳":["Auburn basketball at South Carolina","SEC away · SEC Network"],
+  "奥本男篮 @ 阿肯色":["Auburn basketball at Arkansas","SEC away · ESPN/ESPN2"],
+  "奥本男篮 vs 密苏里":["Auburn basketball vs Missouri","SEC home · ESPN"],
+  "奥本男篮 vs LSU":["Auburn basketball vs LSU","SEC home · SEC Network"],
+  "奥本男篮 @ 肯塔基":["Auburn basketball at Kentucky","SEC away · ESPN/ESPN2"],
+  "奥本男篮 @ 密西西比大学":["Auburn basketball at Ole Miss","SEC away · SEC Network"],
+  "奥本男篮 vs 阿拉巴马":["Auburn basketball vs Alabama","SEC home finale · SEC Network"],
+  "SEC 男篮锦标赛":["SEC Men's Basketball Tournament","Bridgestone Arena, Nashville"],
+  // ---- International ----
+  "亚洲杯足球赛":["AFC Asian Cup","Saudi Arabia"],
+  "女足世界杯":["FIFA Women's World Cup","Brazil"],
+  "洛杉矶夏季奥运会":["Los Angeles Summer Olympics","Los Angeles"],
+  "法国阿尔卑斯冬奥会":["French Alps Winter Olympics","French Alps"],
+  "男足世界杯":["FIFA World Cup","Morocco, Portugal and Spain, with three matches in South America. FIFA has not published exact dates; placed in June–July."],
+  // ---- NBA, basketball, soccer ----
+  "NBA 常规赛（2026–27 赛季）":["NBA regular season (2026–27)","Tipped off Oct 20; the New York Knicks are defending champions."],
+  "NBA 杯小组赛":["NBA Cup group play","Remaining game nights: Nov 20, 24, 25 and 27."],
+  "NBA 杯八强赛":["NBA Cup quarterfinals","At the higher seed's home court; on Prime Video."],
+  "NBA 杯半决赛":["NBA Cup semifinals","Played at home sites this year instead of Las Vegas."],
+  "NBA 杯决赛":["NBA Cup championship","Hinkle Fieldhouse, Indianapolis; does not count in the regular-season standings."],
+  "NBA 圣诞大战":["NBA Christmas Day games","Five games."],
+  "NBA 曼彻斯特赛：马刺 vs 鹈鹕":["NBA Manchester game: Spurs vs Pelicans","Manchester, England"],
+  "NBA 交易截止日":["NBA trade deadline","Thursday"],
+  "NBA 全明星周末":["NBA All-Star Weekend","Phoenix"],
+  "NBA 附加赛、季后赛开打":["NBA Play-In and playoffs begin","Estimated from past seasons; the league has not announced dates."],
+  "NBA 总决赛":["NBA Finals","Confirmed for June; exact dates not announced."],
+  "NBA 选秀":["NBA Draft","Usually late June; date not announced."],
+  "CBA 常规赛（2026–27 赛季）":["CBA regular season (2026–27)","46 rounds; Shanghai are defending champions. Breaks Nov 4 – Dec 3 and Feb 2 – Mar 4."],
+  "CBA 俱乐部杯（小组赛有武汉赛区）":["CBA Club Cup (group stage includes Wuhan)","Played during the league break; groups in Wuhan, Yantai, Yinchuan and Qionghai, final in Nanning."],
+  "CBA 全明星周末":["CBA All-Star Weekend","Xi'an, Shaanxi"],
+  "NCAA 疯狂三月（男篮）":["NCAA March Madness (men's)","Dates estimated from the usual schedule."],
+  "CBA 季后赛":["CBA playoffs","Best-of-seven finals, ending by June 2."],
+  "男篮世界杯":["FIBA Basketball World Cup","Doha, Qatar: 32 teams, 92 games. Results count toward 2028 Olympic qualification."],
+  "英超（2026–27 赛季）":["Premier League (2026–27)","Arsenal are defending champions; the final round is May 30."],
+  "美职联 MLS 杯决赛":["MLS Cup final","Major League Soccer championship."],
+  "欧冠联赛阶段收官":["Champions League: league phase ends","All final-round matches kick off together."],
+  "欧冠淘汰赛开打":["Champions League: knockout phase begins","From the play-offs through to the June final."],
+  "英格兰足总杯决赛":["FA Cup final","Wembley. One source lists May 15; check the FA's announcement."],
+  "欧洲五大联赛收官周":["Final week of Europe's top five leagues","Bundesliga May 22, Ligue 1 May 29, Premier League and Serie A May 30."],
+  "欧联杯决赛":["UEFA Europa League final","Frankfurt, Germany"],
+  "欧冠决赛":["UEFA Champions League final","Estadio Metropolitano, Madrid; Saturday"],
+  "非洲国家杯":["Africa Cup of Nations","Kenya, Uganda and Tanzania; 24 teams."],
+  "欧洲杯":["UEFA Euro 2028","Hosted by the UK and Ireland. Check UEFA for exact dates."],
+  "美洲杯":["Copa América 2028","Host and dates not yet announced; placed in June–July."],
+  "世俱杯":["FIFA Club World Cup 2029","Second 32-team edition; host and dates not announced."],
+  // ---- Auburn University ----
+  "奥本大学感恩节假期":["Auburn University Thanksgiving break","University closed Nov 25–27."],
+  "奥本校园节日点灯仪式":["Auburn Holiday Lighting Ceremony","Samford Lawn. Held Nov 30 in 2025; the 2026 date is an estimate."],
+  "奥本大学毕业典礼（秋季）":["Auburn University commencement (fall)","Saturday, all colleges on one day."],
+  "奥本大学春季学期开学":["Auburn University spring classes begin",""],
+  "奥本大学春假":["Auburn University spring break",""],
+  "奥本大学毕业典礼（春季）":["Auburn University commencement (spring)","College-by-college schedule is released the week of Thanksgiving."],
+  "奥本大学毕业典礼（夏季）":["Auburn University commencement (summer)","Saturday, all colleges on one day."],
+  "奥本大学秋季学期开学":["Auburn University fall classes begin",""],
+  "农学院返校周末、Ag Roundup":["College of Agriculture Homecoming and Ag Roundup","In 2026 it was Sep 25–26: Student for a Day on Friday, then Ag Roundup at Ag Heritage Park before the Homecoming game. The 2027 date is not yet announced."],
+  "中国龙舟公开赛（荆州站）":["China Dragon Boat Open (Jingzhou)","On the old-city moat. The 2027 date is an estimate: 2025 and 2026 were both the weekend before the Dragon Boat Festival."],
+  "荆州端午：各县市龙舟和古城活动":["Jingzhou Dragon Boat Festival events","In 2026 the city ran 120-plus events, with dragon boats in Honghu, Shishou, Jianli, Gong'an and Songzi. 2027 dates are an estimate."],
+  "母亲节":["Mother's Day","Second Sunday in May."],
+  "父亲节":["Father's Day","Third Sunday in June."],
+  // ---- Golf ----
+  "RSM Classic（PGA 赛季收官战）":["RSM Classic (PGA Tour season finale)","Men · Sea Island, Georgia"],
+  "CME 集团巡回锦标赛（LPGA 总决赛）":["CME Group Tour Championship (LPGA finale)","Women · Tiburon, Naples, Florida"],
+  "Hero World Challenge（老虎伍兹主办）":["Hero World Challenge (hosted by Tiger Woods)","Men · Albany, Bahamas; 20-player invitational"],
+  "球员锦标赛（The Players）":["The Players Championship","Men · TPC Sawgrass, Florida"],
+  "美国大师赛（The Masters）":["The Masters","Men's major · Augusta National, about 3 hours from Auburn"],
+  "RBC Heritage":["RBC Heritage","Men · Harbour Town, Hilton Head, South Carolina"],
+  "雪佛龙锦标赛（Chevron Championship）":["Chevron Championship","Women's major · Memorial Park, Houston"],
+  "苏黎世精英赛（Zurich Classic）":["Zurich Classic","Men's team event · TPC Louisiana, New Orleans"],
+  "Valspar Championship":["Valspar Championship","Men · Innisbrook, Florida"],
+  "Truist Championship":["Truist Championship","Men · Quail Hollow, Charlotte"],
+  "PGA 锦标赛":["PGA Championship","Men's major · PGA Frisco, Texas"],
+  "美国女子公开赛（U.S. Women's Open）":["U.S. Women's Open","Women's major · Inverness, Toledo, Ohio"],
+  "纪念高尔夫赛（Memorial Tournament）":["Memorial Tournament","Men · Muirfield Village, Ohio, hosted by Jack Nicklaus"],
+  "美国公开赛（U.S. Open）":["U.S. Open","Men's major · Pebble Beach, California"],
+  "KPMG 女子 PGA 锦标赛":["KPMG Women's PGA Championship","Women's major · Congressional, Maryland"],
+  "埃维昂锦标赛（Evian Championship）":["Evian Championship","Women's major · Évian, France"],
+  "英国公开赛（The Open）":["The Open Championship","Men's major · Old Course, St Andrews"],
+  "AIG 女子英国公开赛":["AIG Women's Open","Women's major · Royal St George's, England"],
+  "FedEx St. Jude 锦标赛（季后赛第 1 站）":["FedEx St. Jude Championship (playoff event 1)","Men · TPC Southwind, Memphis"],
+  "BMW 锦标赛（季后赛第 2 站）":["BMW Championship (playoff event 2)","Men · Bellerive, St. Louis"],
+  "巡回锦标赛（TOUR Championship）":["TOUR Championship","Men · East Lake, Atlanta, about 2 hours from Auburn"],
+  "国际皇冠赛（International Crown）":["International Crown","Women's national-team event · Lake Merced, San Francisco"],
+  "莱德杯（Ryder Cup）":["Ryder Cup","Europe vs USA · Adare Manor, Ireland"],
+  "别克 LPGA 锦标赛（上海）":["Buick LPGA Shanghai","Women · Shanghai, the only LPGA event in mainland China"],
+  "春节庙会：地坛、龙潭、厂甸、大观园":["Beijing temple fairs: Ditan, Longtan, Changdian, Grand View Garden","New Year's Day to the 5th; tickets needed in advance."],
+  "北京车展":["Auto China (Beijing Auto Show)","Biennial; the next is in 2028, dates to be announced."],
+};
+const TEAM_EN={"雷霆":"Thunder","黄蜂":"Hornets","活塞":"Pistons","凯尔特人":"Celtics","尼克斯":"Knicks","热火":"Heat","步行者":"Pacers","开拓者":"Trail Blazers","太阳":"Suns","掘金":"Nuggets","魔术":"Magic","马刺":"Spurs","公牛":"Bulls","雄鹿":"Bucks","独行侠":"Mavericks","76 人":"76ers","奇才":"Wizards","骑士":"Cavaliers","勇士":"Warriors","鹈鹕":"Pelicans","国王":"Kings","猛龙":"Raptors","篮网":"Nets","灰熊":"Grizzlies","森林狼":"Timberwolves","爵士":"Jazz","湖人":"Lakers","快船":"Clippers"};
+const EXTRA_EN={"NBA 杯小组赛日":"NBA Cup group night","马丁·路德·金纪念日 · NBC":"MLK Day · NBC","常规赛收官":"Regular-season finale"};
+const KINDS_EN={fest:'Festival',local:'Wuhan · Festivals',sport:'Wuhan · Sports',expo:'Wuhan · Expos',music:'Wuhan · Music',school:'HZAU',aufb:'Auburn football',aubb:'Auburn basketball',intl:'International',
+  bjlocal:'Beijing · Seasons',bjsport:'Beijing · Sports',bjexpo:'Beijing · Expos',bjculture:'Beijing · Culture',bjgov:'Beijing · National',
+  fcn:'Food · China',fus:'Food · USA',fal:'Food · near Auburn',feu:'Food · Europe',fap:'Food · Asia-Pacific',golf:'Golf',edu:'School',fam:'Family',jzlocal:'Jingzhou · Festivals',jzsport:'Jingzhou · Sports',au:'Auburn · Campus',auag:'Auburn · Agriculture',nba:'NBA',bball:'Basketball',soccer:'Soccer',hawks:'Hawks'};
+const GROUPS_EN={all:'All',fest:'Traditional festivals',wh:'Wuhan',jz:'Jingzhou',kid:'School calendar',bj:'Beijing',food:'Food festivals',ball:'NBA · Basketball · Soccer',sports:'Auburn · Sports',golf:'Golf',fam:'Family'};
+const ALLYEAR_EN='Wuhan: Qintai Music Festival, Yangtze light show, Zhiyin riverboat theatre, chime-bell performances at Hubei Provincial Museum, the science and natural history museums. Jingzhou: the city wall, Jingzhou Museum, Fantawild, morning noodles and fish cake. Beijing: Tiananmen flag-raising, Palace Museum and National Museum exhibitions, NCPA season, 798 Art District.';
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WKE=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const T={
+  zh:{title:'活动日历',back:'← 返回主页 Bo Cheng',btn:'EN',btnLabel:'Switch to English',filter:'按类别筛选',next:'下一个',allyear:'全年都有',live:'进行中',now:'正在',liveHead:'正在进行',today:'今天',tomorrow:'明天',after:'天后',official:'官网 ↗',search:'搜索 ↗',nonote:'暂无备注',empty:'这个类别暂时没有活动。',
+    note1:'点活动名字打开网站：“官网”直达官方网站，“搜索”打开搜索结果（中国的活动用百度）。点其他地方展开说明。',
+    note2:'日期按距今天数自动排序。标了“约”“日期待定”或“以官宣为准”的是按往年估计的，出行前请以主办方公布为准。内容整理于 2026 年 11 月。'},
+  en:{title:'Activity Calendar',back:'← Back to Bo Cheng',btn:'中文',btnLabel:'切换到中文',filter:'Filter by category',next:'NEXT UP',allyear:'All year',live:'Now on',now:'now',liveHead:'Happening now',today:'Today',tomorrow:'tomorrow',after:'days',official:'Official ↗',search:'Search ↗',nonote:'No notes',empty:'No events in this category yet.',
+    note1:'Click an event name to open its site: “Official” goes to the official website, “Search” opens search results. Click anywhere else on a row for details.',
+    note2:'Events are sorted by days from today. Dates marked “approx.” or “Date TBC” are estimated from past years, so check with the organiser before travelling. Compiled November 2026.'}
+};
+
 /* Dated one-off events. Times are US Central (CT). */
 const ONEOFF=[
   // Auburn football 2026 (remaining)
@@ -516,8 +828,8 @@ const HAWKS=[
   ['2027-04-04','@','76 人','中午 12:00'],['2027-04-06','vs','尼克斯','晚 7:00','NBC'],['2027-04-09','vs','凯尔特人','晚 6:00'],
   ['2027-04-11','@','骑士','下午 5:00','常规赛收官'],
 ];
-HAWKS.forEach(([d,h,o,t,x])=>ONEOFF.push({n:'老鹰 '+h+' '+o,k:'hawks',d,t:t+' CT',p:(h==='@'?'客场':'主场，State Farm Arena')+(x?' · '+x:''),u:'https://www.nba.com/hawks/schedule'}));
-ONEOFF.push({n:'老鹰：NBA 杯周还有 2 场待定',k:'hawks',d:'2026-12-04',e:'2026-12-11',p:'小组赛打完后才定：晋级就打淘汰赛，没晋级就补两场常规赛',tbd:true,u:'https://www.nba.com/hawks/schedule'});
+HAWKS.forEach(([d,h,o,t,x])=>ONEOFF.push({n:'老鹰 '+h+' '+o,en:['Hawks '+h+' '+TEAM_EN[o],(h==='@'?'Away':'Home, State Farm Arena')+(x?' · '+(EXTRA_EN[x]||x):'')],k:'hawks',d,t:t+' CT',p:(h==='@'?'客场':'主场，State Farm Arena')+(x?' · '+x:''),u:'https://www.nba.com/hawks/schedule'}));
+ONEOFF.push({n:'老鹰：NBA 杯周还有 2 场待定',en:['Hawks: 2 games TBD during NBA Cup week','Set after group play: knockout games if they advance, otherwise two regular-season games.'],k:'hawks',d:'2026-12-04',e:'2026-12-11',p:'小组赛打完后才定：晋级就打淘汰赛，没晋级就补两场常规赛',tbd:true,u:'https://www.nba.com/hawks/schedule'});
 const ALLYEAR='武汉：琴台音乐节、湖畔公益音乐季、武汉爱乐四季音乐会、长江灯光秀、知音号、湖北省博物馆编钟演奏、武汉科技馆和自然博物馆（带孩子）；荆州：古城墙、荆州博物馆、方特东方神画、早堂面和鱼糕；北京：天安门升旗、故宫和国博特展、国家大剧院演出季、798 艺术区';
 
 const KINDS={fest:'传统节日',local:'武汉·节庆',sport:'武汉·体育',expo:'武汉·展会',music:'武汉·音乐',school:'华农',aufb:'奥本橄榄球',aubb:'奥本男篮',intl:'国际赛事',
@@ -525,6 +837,14 @@ const KINDS={fest:'传统节日',local:'武汉·节庆',sport:'武汉·体育',e
   fcn:'美食·中国',fus:'美食·美国',fal:'美食·奥本周边',feu:'美食·欧洲',fap:'美食·亚太',golf:'高尔夫',edu:'孩子·上学',fam:'亲情·礼俗',jzlocal:'荆州·节庆',jzsport:'荆州·体育',au:'奥本·校园',auag:'奥本·农学院',nba:'NBA',bball:'篮球',soccer:'足球',hawks:'老鹰队'};
 const GROUP_OF=k=>k==='fest'?'fest':k==='edu'?'kid':k.startsWith('jz')?'jz':['nba','bball','soccer','hawks'].includes(k)?'ball':k==='fam'?'fam':k==='golf'?'golf':k.startsWith('bj')?'bj':(k[0]==='f'&&k!=='fest')?'food':['aufb','aubb','intl','au','auag'].includes(k)?'sports':'wh';
 const GROUPS=[['fest','传统节日'],['wh','武汉'],['jz','荆州'],['kid','孩子·上学'],['bj','北京'],['food','美食节'],['ball','NBA·篮球·足球'],['sports','奥本大学·赛事'],['golf','高尔夫'],['fam','亲情·礼俗']];
+
+
+/* Language: shared with the main site through the same localStorage key */
+let lang='zh';
+try{lang=localStorage.getItem('bocheng-lang')||((navigator.language||'').toLowerCase().indexOf('zh')===0?'zh':'en');}catch(e){lang=(navigator.language||'').toLowerCase().indexOf('zh')===0?'zh':'en';}
+if(lang!=='en')lang='zh';
+const APPROX_L=/约|前后|估计|随春节|元宵节后|官宣/;
+const APPROX_X=/官宣|估计|通知为准|公告为准|校历为准|看气温|每年不同/;
 
 function nextWindow(ev){
   const y=TODAY.getFullYear();
@@ -545,21 +865,49 @@ function buildItems(){
   for(const [n,dates] of Object.entries(FEST)){
     const iso=dates.find(s=>s>=ymd(TODAY)); if(!iso) continue;
     const [y,m,d]=iso.split('-').map(Number);const dt=mk(y,m,d);
-    items.push({name:n,kind:'fest',start:dt,live:false,label:null,note:FEST_NOTE[n]});
+    items.push({key:n,name:n,kind:'fest',start:dt,realStart:dt,end:dt,live:false,label:null,note:FEST_NOTE[n]});
   }
-  for(const lf of LUNAR_FEST){const dt=nextLunar(lf.m,lf.d);if(dt)items.push({name:lf.n,kind:lf.k||'fest',start:dt,live:false,label:lf.l||null,note:lf.x});}
-  for(const ev of EVENTS){const w=nextWindow(ev);items.push({u:ev.u,name:ev.anniv?ev.n+'（'+(w.start.getFullYear()-ev.anniv)+' 周年）':ev.n,kind:ev.k,start:w.live?TODAY:w.start,realStart:w.start,end:w.end,live:w.live,label:ev.l,note:ev.x});}
+  for(const lf of LUNAR_FEST){const dt=nextLunar(lf.m,lf.d);if(dt)items.push({key:lf.n,name:lf.n,kind:lf.k||'fest',start:dt,realStart:dt,end:dt,live:false,label:lf.l||null,note:lf.x});}
+  for(const ev of EVENTS){const w=nextWindow(ev);const ann=ev.anniv?w.start.getFullYear()-ev.anniv:0;
+    items.push({key:ev.n,u:ev.u,ann,name:ann?ev.n+'（'+ann+' 周年）':ev.n,kind:ev.k,start:w.live?TODAY:w.start,realStart:w.start,end:w.end,live:w.live,label:ev.l,note:ev.x,approx:APPROX_L.test(ev.l)||APPROX_X.test(ev.x)});}
   for(const o of ONEOFF){
     const [y,m,d]=o.d.split('-').map(Number);const s0=mk(y,m,d);
     const e0=o.e?(([a,b,c])=>mk(a,b,c))(o.e.split('-').map(Number)):s0;
     if(e0<TODAY) continue;
-    if(!['hawks','aubb','aufb'].includes(o.k)&&items.some(x=>x.name===o.n)) continue;
+    if(!['hawks','aubb','aufb'].includes(o.k)&&items.some(x=>x.key===o.n)) continue;
     const live=TODAY>=s0&&o.e;
-    items.push({u:o.u,name:o.n,kind:o.k,start:live?TODAY:s0,realStart:s0,end:e0,live:!!live,label:o.tbd?'日期待定':(o.e?'至 '+(e0.getMonth()+1)+'/'+e0.getDate():null),sub:[o.t,o.p].filter(Boolean).join(' · '),note:o.p});
+    items.push({key:o.n,en:o.en,u:o.u,name:o.n,kind:o.k,start:live?TODAY:s0,realStart:s0,end:e0,live:!!live,tbd:!!o.tbd,t:o.t,label:o.tbd?'日期待定':(o.e?'至 '+(e0.getMonth()+1)+'/'+e0.getDate():null),sub:[o.t,o.p].filter(Boolean).join(' · '),isOne:true,note:o.p});
   }
   items.forEach(it=>{it.days=Math.round((it.start-TODAY)/DAY);});
   items.sort((a,b)=>a.days-b.days||(a.kind==='fest'?-1:1));
   return items;
+}
+
+/* Text helpers that depend on the language */
+const enOf=it=>it.en||EN[it.key];
+function nm(it){if(lang==='en'){const e=enOf(it);return (e?e[0]:it.name)+(it.ann?' ('+it.ann+' years)':'');}return it.name;}
+function nt(it){if(lang==='en'){const e=enOf(it);return e?e[1]:it.note;}return it.note;}
+function tEn(t){
+  if(!t) return '';
+  if(t==='时间待定') return 'Time TBD';
+  if(t==='对手待定') return 'Opponent TBD';
+  const m=t.match(/^(上午|中午|下午|晚)\s*(.+?)\s*CT$/);
+  if(!m) return t;
+  return m[2]+' '+(m[1]==='上午'?'AM':'PM')+' CT';
+}
+const fmtD=d=>lang==='en'?MON[d.getMonth()]+' '+d.getDate():(d.getMonth()+1)+'/'+d.getDate();
+const lun=l=>lang==='en'?'Lunar '+(l.leap?'leap ':'')+l.m+'/'+l.d:'农历'+lunarText(l);
+const wk=d=>lang==='en'?WKE[d.getDay()]:'周'+WK[d.getDay()];
+function daysText(n){
+  if(lang==='en') return n===0?'today':n===1?'tomorrow':'in '+n+' days';
+  return n===0?'今天':n===1?'明天':n+' 天';
+}
+function subDate(it,d){
+  if(it.live) return (lang==='en'?'to ':'至 ')+fmtD(it.end);
+  if(lang==='zh') return it.label?it.label:wk(d);
+  if(it.tbd) return 'Date TBC';
+  const multi=it.end&&it.end>it.realStart;
+  return (multi?'to '+fmtD(it.end):wk(d))+(it.approx?' · approx.':'');
 }
 
 /* Rendering */
@@ -567,52 +915,70 @@ let filter='all';try{filter=localStorage.getItem('cal-filter')||'all';}catch(e){
 if(!['all',...GROUPS.map(g=>g[0])].includes(filter))filter='all';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const daysText=n=>n===0?'今天':n===1?'明天':n+' 天';
 
 function render(){
   TODAY=todayLocal();
+  const L=T[lang],en=lang==='en';
+  document.documentElement.lang=en?'en':'zh-CN';
+  document.title=L.title+' · Bo Cheng';
+  $('h1').textContent=L.title;$('back').textContent=L.back;
+  $('langBtn').textContent=L.btn;$('langBtn').setAttribute('aria-label',L.btnLabel);
+  $('filters').setAttribute('aria-label',L.filter);
+  $('n1').textContent=L.note1;$('n2').textContent=L.note2;
+
   const l=lunarOf(TODAY);
-  $('today').innerHTML='今天 <b>'+(TODAY.getMonth()+1)+' 月 '+TODAY.getDate()+' 日 周'+WK[TODAY.getDay()]+'</b>'+(l?' · 农历'+lunarText(l):'');
+  $('today').innerHTML=en
+    ?'Today <b>'+WKE[TODAY.getDay()]+', '+MON[TODAY.getMonth()]+' '+TODAY.getDate()+'</b>'+(l?' · '+lun(l):'')
+    :'今天 <b>'+(TODAY.getMonth()+1)+' 月 '+TODAY.getDate()+' 日 周'+WK[TODAY.getDay()]+'</b>'+(l?' · '+lun(l):'');
   const items=buildItems();
   const upcoming=items.filter(i=>!i.live);
   const nx=upcoming[0];
   if(nx){
-    const others=upcoming.slice(1,4).map(i=>'<span>'+esc(i.name)+' · '+daysText(i.days)+'</span>').join('');
-    const nl=lunarOf(nx.start);
-    $('hero').innerHTML='<div class="seal"><span class="n">'+(nx.days===0?'今':nx.days)+'</span><span class="u">'+(nx.days===0?'天':'天后')+'</span></div>'+
-      '<div><div class="eyebrow">下一个</div><h2>'+esc(nx.name)+'</h2><div class="meta">'+(nx.start.getFullYear())+' 年 '+(nx.start.getMonth()+1)+' 月 '+nx.start.getDate()+' 日 周'+WK[nx.start.getDay()]+(nl?' · 农历'+lunarText(nl):'')+(nx.note?'<br>'+esc(nx.note):'')+'</div>'+
+    const others=upcoming.slice(1,4).map(i=>'<span>'+esc(nm(i))+' · '+daysText(i.days)+'</span>').join('');
+    const nl=lunarOf(nx.start),s=nx.start;
+    const sealN=nx.days===0?(en?'0':'今'):nx.days;
+    const sealU=nx.days===0?(en?'today':'天'):(en?(nx.days===1?'day':'days'):'天后');
+    const dateLine=en?WKE[s.getDay()]+', '+MONL[s.getMonth()]+' '+s.getDate()+', '+s.getFullYear():s.getFullYear()+' 年 '+(s.getMonth()+1)+' 月 '+s.getDate()+' 日 周'+WK[s.getDay()];
+    const note=nt(nx);
+    $('hero').innerHTML='<div class="seal"><span class="n">'+sealN+'</span><span class="u">'+sealU+'</span></div>'+
+      '<div><div class="eyebrow">'+L.next+'</div><h2>'+esc(nm(nx))+'</h2><div class="meta">'+dateLine+(nl?' · '+lun(nl):'')+(note?'<br>'+esc(note):'')+'</div>'+
       (others?'<div class="also">'+others+'</div>':'')+'</div>';
   }
   const counts={all:items.length};items.forEach(i=>{const g=GROUP_OF(i.kind);counts[g]=(counts[g]||0)+1;});
-  $('filters').innerHTML=[['all','全部'],...GROUPS].map(([k,v])=>'<button class="chip" type="button" data-k="'+k+'" aria-pressed="'+(filter===k)+'">'+v+'<span class="c">'+(counts[k]||0)+'</span></button>').join('');
-  $('allyear').innerHTML='<b>全年都有</b>'+ALLYEAR;
+  $('filters').innerHTML=[['all','全部'],...GROUPS].map(([k,v])=>'<button class="chip" type="button" data-k="'+k+'" aria-pressed="'+(filter===k)+'">'+(en?GROUPS_EN[k]:v)+'<span class="c">'+(counts[k]||0)+'</span></button>').join('');
+  $('allyear').innerHTML='<b>'+L.allyear+'</b>'+(en?ALLYEAR_EN:ALLYEAR);
   $('allyear').hidden=!(filter==='all'||filter==='wh'||filter==='jz'||filter==='bj');
   const shown=items.filter(i=>filter==='all'||GROUP_OF(i.kind)===filter);
   const groups=new Map();
   for(const it of shown){const key=it.live?'live':it.start.getFullYear()+'-'+pad(it.start.getMonth()+1);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(it);}
   let html='';
   for(const [key,list] of groups){
-    const head=key==='live'?'正在进行':(+key.slice(0,4))+' 年 '+(+key.slice(5))+' 月';
-    html+='<div class="month"><h3>'+head+'<small>'+list.length+' 项</small></h3>';
+    const head=key==='live'?L.liveHead:(en?MONL[+key.slice(5)-1]+' '+key.slice(0,4):(+key.slice(0,4))+' 年 '+(+key.slice(5))+' 月');
+    html+='<div class="month"><h3>'+head+'<small>'+list.length+(en?(list.length===1?' event':' events'):' 项')+'</small></h3>';
     for(const it of list){
       const d=it.live?it.realStart:it.start;const lu=it.kind==='fest'?lunarOf(it.start):null;
-      const dateTop=it.live?'进行中':(d.getMonth()+1)+'/'+d.getDate();
-      const dateSub=it.live?('至 '+(it.end.getMonth()+1)+'/'+it.end.getDate()):(it.label?it.label:'周'+WK[d.getDay()]);
+      const dateTop=it.live?L.live:(d.getMonth()+1)+'/'+d.getDate();
       const soon=!it.live&&it.days<=7;
-      const isCn=['fcn','fest','school','edu','fam'].includes(it.kind)||it.kind.startsWith('jz')||it.kind.startsWith('bj')||GROUP_OF(it.kind)==='wh';
-      const href=it.u||((isCn?'https://www.baidu.com/s?wd=':'https://www.google.com/search?q=')+encodeURIComponent(it.name.replace(/（.*?）/g,' ')+' '+d.getFullYear()));
+      const name=nm(it),note=nt(it);
+      const isCn=!en&&(['fcn','fest','school','edu','fam'].includes(it.kind)||it.kind.startsWith('jz')||it.kind.startsWith('bj')||GROUP_OF(it.kind)==='wh');
+      const href=it.u||((isCn?'https://www.baidu.com/s?wd=':'https://www.google.com/search?q=')+encodeURIComponent(name.replace(/（.*?）/g,' ')+' '+d.getFullYear()));
+      const sub=[lu?lun(lu):'',it.isOne?(en?[tEn(it.t),note].filter(Boolean).join(' · '):it.sub):''].filter(Boolean).join(' · ');
+      const right=it.live?'<b>●</b><span>'+L.now+'</span>'
+        :it.days===0?'<b>'+L.today+'</b><span></span>'
+        :'<b>'+it.days+'</b><span>'+(it.days===1?(en?'day':L.tomorrow):L.after)+'</span>';
       html+='<div tabindex="0" role="button" class="row'+(soon?' soon':'')+(it.kind==='fest'?' fest':'')+'" aria-expanded="false">'+
-        '<div class="d"><b>'+dateTop+'</b><span>'+esc(dateSub)+'</span></div>'+
-        '<div class="t"><div class="name"><a class="go" href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(it.name)+'<span class="arr">'+(it.u?'官网 ↗':'搜索 ↗')+'</span></a><span class="tag k-'+it.kind+'">'+KINDS[it.kind]+'</span>'+(it.live?'<span class="live">进行中</span>':'')+'</div>'+
-        '<div class="sub">'+esc([lu?'农历'+lunarText(lu):'',it.sub].filter(Boolean).join(' · '))+'</div>'+
-        '<div class="more" hidden>'+(esc(it.note)||'暂无备注')+'</div></div>'+
-        '<div class="left">'+(it.live?'<b>●</b><span>正在</span>':'<b>'+(it.days===0?'今天':it.days)+'</b><span>'+(it.days===0?'':it.days===1?'明天':'天后')+'</span>')+'</div></div>';
+        '<div class="d"><b>'+dateTop+'</b><span>'+esc(subDate(it,d))+'</span></div>'+
+        '<div class="t"><div class="name"><a class="go" href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(name)+'<span class="arr">'+(it.u?L.official:L.search)+'</span></a><span class="tag k-'+it.kind+'">'+(en?KINDS_EN[it.kind]:KINDS[it.kind])+'</span>'+(it.live?'<span class="live">'+L.live+'</span>':'')+'</div>'+
+        '<div class="sub">'+esc(sub)+'</div>'+
+        '<div class="more" hidden>'+(esc(note)||L.nonote)+'</div></div>'+
+        '<div class="left">'+right+'</div></div>';
     }
     html+='</div>';
   }
-  $('timeline').innerHTML=html||'<div class="empty">这个类别暂时没有活动。</div>';
+  $('timeline').innerHTML=html||'<div class="empty">'+L.empty+'</div>';
 }
 $('filters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;filter=b.dataset.k;try{localStorage.setItem('cal-filter',filter);}catch(e){}render();});
+$('langBtn').addEventListener('click',()=>{lang=lang==='en'?'zh':'en';try{localStorage.setItem('bocheng-lang',lang);}catch(e){}render();});
 $('timeline').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('row')){e.preventDefault();e.target.click();}});
 $('timeline').addEventListener('click',e=>{if(e.target.closest('a'))return;const r=e.target.closest('.row');if(!r)return;const m=r.querySelector('.more');m.hidden=!m.hidden;r.setAttribute('aria-expanded',String(!m.hidden));});
 
